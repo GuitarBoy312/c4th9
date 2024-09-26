@@ -86,7 +86,7 @@ def generate_conversation_question():
 
     key_expression = f'''
     A: What are you doing?
-    B: {answer1}
+    B: {answer}
     '''
     prompt = f"""{key_expression}과 같은 구문을 사용 하는 CEFR A1 수준의 간단한 영어 대화를 생성해주세요. 
     영어 대화를 생성할 때, 마지막 대화 내용은 알려주지 말고대화 내용에 관한 객관식 질문으로 만들어야 합니다. 

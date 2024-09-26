@@ -26,14 +26,14 @@ SYSTEM_MESSAGE = {
     [질문]
     What are you doing?
     [대답]
-    I’m singing.
-    I’m dancing.
-    I’m cooking.
-    I’m sleeping.
-    I’m making a doll.
-    I’m cleaning the house.
-    I’m watching TV.
-    I’m washing dishes.
+    I'm singing. 🎤  
+    I'm dancing. 💃  
+    I'm cooking. 👨‍🍳  
+    I'm sleeping. 😴  
+    I'm making a doll. 🧸  
+    I'm cleaning the house. 🧹  
+    I'm watching TV. 📺  
+    I'm washing dishes. 🍽️ 
     '''
 }
 

@@ -11,23 +11,23 @@ def generate_question():
     characters = ["Paul", "Jello", "Uju", "Bora", "Tina", "Khan", "Amy", "Eric"]
     
     questions = [
-        "Can you swim, {name}?",
-        "Can you sing, {name}?",
-        "Can you dance, {name}?",
-        "Can you run, {name}?",
-        "Can you walk, {name}?",
-        "Can you dive, {name}?",
-        "Can you jump, {name}?"
+        "What are you doing, {name}?"
     ]
     
     answers = [
-        "Yes, I can.",
-        "No, I can't."
+        "I'm singing.",
+        "I'm dancing.",
+        "I'm cooking.",
+        "I'm sleeping.",
+        "I'm making a doll.",
+        "I'm cleaning the house.",
+        "I'm watching TV.",
+        "I'm washing dishes."
     ]
     
     korean_questions = [
         "무엇에 대해 이야기 했나요?",
-        "{name}은 ...를 할 수 있나요?"
+        "{name}은 무엇을 하고 있나요?"
     ]
     
     selected_question = random.choice(questions)

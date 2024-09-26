@@ -9,7 +9,7 @@ client = OpenAI(api_key=st.secrets["openai_api_key"])
 def generate_essay_question():
     name = random.choice(["You","Eric","Mia","Paul","Sara","Someone's name"])
     question = "What are you doing?"
-    answers = [
+    answer = random.choice([
         "I'm singing.",
         "I'm dancing.",
         "I'm cooking.",
@@ -18,22 +18,6 @@ def generate_essay_question():
         "I'm cleaning the house.",
         "I'm watching TV.",
         "I'm washing dishes."
-    ]
-    answer = random.choice([
-        "I'm singing in the shower.",
-        "I'm dancing to my favorite song.",
-        "I'm cooking dinner for my family.",
-        "I'm sleeping in my comfortable bed.",
-        "I'm making a doll for my little sister.",
-        "I'm cleaning the house before my parents come home.",
-        "I'm watching TV in the living room.",
-        "I'm washing dishes after lunch.",
-        "I'm reading a book in my room.",
-        "I'm playing video games on my computer.",
-        "I'm doing my homework at my desk.",
-        "I'm talking on the phone with my friend.",
-        "I'm writing in my diary.",
-        "I'm exercising in the garden."
     ])
     question_format = "대화를 읽고 무엇을 하고 있는지에 관해 묻는 질문"
 

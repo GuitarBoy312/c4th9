@@ -17,23 +17,23 @@ SYSTEM_MESSAGE = {
     [대화의 제목]
     Can you swim?
     [지시]
-    1. 내가 너에게 "Can you ...?" 이라고 질문을 할거야. 
-    2. 너는 내 질문을 듣고 짝지어진 대답을 해.
-    3. 그 후, 너는 [질문] 중에서 하나를 무작위로 선택해서 "Can you ...?" 이라고 질문해. 
+    1. 내가 너에게 "What are you doing?" 이라고 질문을 할거야. 
+    2. 너는 내 질문을 듣고, [대답] 중 하나를 무작위로 골래 대답을 해.
+    3. 그 후, 너는 "What are you doing?" 이라고 질문해. 
        그러면 내가 대답을 할거야.
     4. 내가 또 질문을 하면 [대답]을 무작위로 선택해서 대답해.
-    5. 내가 그만하자고 할 때까지 계속 주고 받으며 대화하자.
+    5. 내가 그만하자고 할 때까�� 계속 주고 받으며 대화하자.
     [질문]
-    Can you swim?🏊‍♀️ 
-`    Can you sing?🎤 
-    Can you dance?💃 
-    Can you run?🏃‍♀️ 
-    Can you walk?🚶‍♀️ 
-    Can you dive?🤿 
-    Can you jump?🤸‍♀️
+    What are you doing?
     [대답]
-    Yes, I can.
-    No, I can’t.
+    I’m singing.
+    I’m dancing.
+    I’m cooking.
+    I’m sleeping.
+    I’m making a doll.
+    I’m cleaning the house.
+    I’m watching TV.
+    I’m washing dishes.
     '''
 }
 
@@ -123,17 +123,18 @@ with st.expander("❗❗ 글상자를 펼쳐 사용방법을 읽어보세요 �
     st.write("다음 보기와 같이 잉글링에게 질문과 대답을 해 보세요.")
     st.markdown('''
     [질문]<br>
-    🔸Can you swim?🏊‍♀️<br>
-    🔸Can you sing?🎤<br> 
-    🔸Can you dance?💃<br> 
-    🔸Can you run?🏃‍♀️<br> 
-    🔸Can you walk?🚶‍♀️<br> 
-    🔸Can you dive?🤿<br> 
-    🔸Can you jump?🤸‍♀️<br><br>
+    🔸What are you doing? 🤔<br><br>
+    
     [대답]<br>
-    🔹Yes, I can.<br>
-    🔹No, I can’t.<br>
-        ''', unsafe_allow_html=True)
+    🔹I'm singing. 🎤<br>
+    🔹I'm dancing. 💃<br>
+    🔹I'm cooking. 👨‍🍳<br>
+    🔹I'm sleeping. 😴<br>
+    🔹I'm making a doll. 🧸<br>
+    🔹I'm cleaning the house. 🧹<br>
+    🔹I'm watching TV. 📺<br>
+    🔹I'm washing dishes. 🍽️<br>
+''', unsafe_allow_html=True)
 
     
 # 버튼 배치

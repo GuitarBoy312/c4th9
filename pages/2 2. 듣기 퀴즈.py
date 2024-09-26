@@ -64,7 +64,7 @@ B: {speaker_b}: {selected_answer}
     """
 
     response = client.chat.completions.create(
-        model=""gpt-4o-mini"",
+        model="gpt-4o-mini",
         messages=[{"role": "user", "content": prompt}]
     )
 

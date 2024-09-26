@@ -7,14 +7,23 @@ client = OpenAI(api_key=st.secrets["openai_api_key"])
 
 # 단어 목록
 words = {
-    'about': '~에 대하여',
-    'can': '할 수 있다',
-    'dance': '춤추다',
-    'dive': '다이빙하다',
-    'run': '달리다',
-    'sing': '노래하다',
-    'swim': '수영하다',
-    'walk': '걷다'
+    'busy': '바쁜',
+    'clean': '깨끗한, 청소하다',
+    'dish': '접시',
+    'doll': '인형',
+    'homework': '숙제',
+    'house': '집',
+    'kitchen': '부엌',
+    'sleep': '잠자다',
+    'sure': '확실한',
+    'wash': '씻다',
+    'glove': '장갑',
+    'hair band': '머리띠',
+    'hundred': '백, 100',
+    'much': '많은',
+    'pencil case': '필통',
+    'really': '정말로',
+    'scientist': '과학자'
 }
 
 def generate_question():

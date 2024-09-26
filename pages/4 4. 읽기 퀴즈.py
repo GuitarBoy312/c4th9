@@ -8,17 +8,41 @@ client = OpenAI(api_key=st.secrets["openai_api_key"])
 
 def generate_essay_question():
     name = random.choice(["You","Eric","Mia","Paul","Sara","Someone's name"])
-    answer1 = random.choice([" I went to the history museum.", "I played badminton.", 
-                             " I watched a movie."," I went to the space center."," I made a car.","I went fishing.","I went shopping","I went to the park.","I went to the library.","I went to the museum.",
-                             "I played soccer","I played basketball", "I played baseball","I played tennis"])       
-    key_expression = (f'''
-    A:What did {name} do yesterday?
-    B:{answer1}
-    A:What did {name} do there?
-    B:........
-    ''')
+    question = "What are you doing?"
+    answers = [
+        "I'm singing.",
+        "I'm dancing.",
+        "I'm cooking.",
+        "I'm sleeping.",
+        "I'm making a doll.",
+        "I'm cleaning the house.",
+        "I'm watching TV.",
+        "I'm washing dishes."
+    ]
+    answer = random.choice([
+        "I'm singing in the shower.",
+        "I'm dancing to my favorite song.",
+        "I'm cooking dinner for my family.",
+        "I'm sleeping in my comfortable bed.",
+        "I'm making a doll for my little sister.",
+        "I'm cleaning the house before my parents come home.",
+        "I'm watching TV in the living room.",
+        "I'm washing dishes after lunch.",
+        "I'm reading a book in my room.",
+        "I'm playing video games on my computer.",
+        "I'm doing my homework at my desk.",
+        "I'm talking on the phone with my friend.",
+        "I'm writing in my diary.",
+        "I'm exercising in the garden."
+    ])
+    question_format = "대화를 읽고 무엇을 하고 있는지에 관해 묻는 질문"
+
+    key_expression = f'''
+    A: What are you doing?
+    B: {answer}
+    '''
     prompt = f"""
-    {key_expression}을 이용하여CEFR A1 수준의 영어 지문을 4-6문장으로 작성해주세요. 
+    {key_expression}을 이용하여CEFR A1 수준의 영어 지문을 2-3문장으로 작성해주세요. 
     그 다음, 지문에 관한 간단한 질문을 한국어로 만들어주세요. 
     질문을 만들 때, 지문에 맞는 화자를 포함해서 질문해 주세요. 예를 들어, 화자가 Tom이면 "톰이..." 로, 화자가 I면 "내가..."로 시작하는 질문을 생성해 주세요. A가 또는 B가로 시작하는 말은 하지마세요.
     마지막으로, 질문에 대한 4개의 선택지를 한국어로 제공해주세요. 
@@ -43,25 +67,35 @@ def generate_essay_question():
     return response.choices[0].message.content
 
 def generate_conversation_question():
-    answer1 = random.choice([" I went to the history museum.", "I played badminton.", " I watched a movie."," I went to the space center."," I made a car.","I went fishing.","I went shopping","I went to the park.","I went to the library.","I went to the museum.","I played soccer","I played basketball", "I played baseball","I played tennis"])       
-    question_format = "대화를 읽고 어제 뭘했는지 또는 거기서 뭘했는지에 관해 묻는 질문"
-    
+    answer = random.choice([
+    "I'm singing in the shower.",
+    "I'm dancing to my favorite song.",
+    "I'm cooking dinner for my family.",
+    "I'm sleeping in my comfortable bed.",
+    "I'm making a doll for my little sister.",
+    "I'm cleaning the house before my parents come home.",
+    "I'm watching TV in the living room.",
+    "I'm washing dishes after lunch.",
+    "I'm reading a book in my room.",
+    "I'm playing video games on my computer.",
+    "I'm doing my homework at my desk.",
+    "I'm talking on the phone with my friend.",
+    "I'm writing in my diary.",
+    "I'm exercising in the garden."])
+    question_format = "대화를 읽고 무엇을 하고 있는지에 관해 묻는 질문"
+
     key_expression = f'''
-A:What did you(someone's name) do yesterday?
-B:{answer1}
-A:What did you(someone's name) do there?
-B:.......
-'''
+    A: What are you doing?
+    B: {answer1}
+    '''
     prompt = f"""{key_expression}과 같은 구문을 사용 하는 CEFR A1 수준의 간단한 영어 대화를 생성해주세요. 
     영어 대화를 생성할 때, 마지막 대화 내용은 알려주지 말고대화 내용에 관한 객관식 질문으로 만들어야 합니다. 
     그 후 대화 내용에 관한 객관식 질문을 한국어로 만들어주세요.  
     조건: 문제의 정답은 1개 입니다. 
     A와 B가 대화할 때 상대방의 이름을 부르면서 대화를 합니다. 
-    영어 대화는 A와 B가 각각 1번 또는 2번 말하고 끝납니다.
+    영어 대화는 A와 B가 각각 1번 말하고 끝납니다.
     형식:
     [영어 대화]
-    A: ...
-    B: ...
     A: ...
     B: ...
 

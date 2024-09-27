@@ -151,7 +151,7 @@ def parse_question_data(data, question_type):
             else:
                 if line.startswith("질문:"):
                     question = line.replace("질문:", "").strip()
-                elif line.startswith(("A.", "B.", "C.", "D.")):
+                elif line.startswith(("1.", "2.", "3.", "4.")):
                     options.append(line.strip())
                 elif line.startswith("정답:"):
                     correct_answer = line.replace("정답:", "").strip()

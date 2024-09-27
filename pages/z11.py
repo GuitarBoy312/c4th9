@@ -157,7 +157,7 @@ def parse_question_data(data, question_type):
                     correct_answer = line.replace("정답:", "").strip()
 
         if correct_answer:
-            correct_answer = int(correct_answer)
+            correct_answer = int(re.search(r'\d+', correct_answer).group())
 
         return dialogue.strip(), question, options, correct_answer
 
@@ -280,10 +280,9 @@ def main():
             st.divider() 
             st.subheader("다음 중 알맞은 답을 골라보세요.")
             if options:  # 선택지가 있는 경우에만 라디오 버튼을 표시
-                numbered_options = [f"{i+1}. {option}" for i, option in enumerate(options)]
-                selected_option = st.radio("", numbered_options, index=None, key="conversation_options")
+                selected_option = st.radio("", options, index=None, key="conversation_options")
                 if selected_option:
-                    st.session_state.selected_option = int(selected_option.split('.')[0])
+                    st.session_state.selected_option = int(re.search(r'\d+', selected_option).group())
             else:
                 st.write("선택지가 없습니다.")
 
@@ -296,9 +295,8 @@ def main():
                     is_correct = st.session_state.selected_option == correct_answer
                     selected_text = options[st.session_state.selected_option - 1]
                 else:
-                    selected_number = int(st.session_state.selected_option)
-                    is_correct = selected_number == (ord(correct_answer) - ord('A') + 1)
-                    selected_text = options[selected_number - 1].split('. ', 1)[1]
+                    is_correct = st.session_state.selected_option == correct_answer
+                    selected_text = re.sub(r'^\d+\.\s*', '', options[st.session_state.selected_option - 1])
                 
                 if is_correct:
                     st.success("정답입니다!")

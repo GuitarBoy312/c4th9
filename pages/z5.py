@@ -175,6 +175,17 @@ def get_explanation(question_type, correct_answer, selected_option):
         correct_text = next(option for option in options if option.startswith(f"{correct_answer}."))
         return f"'{selected_option}'이(가) 아니라 '{correct_text}'이(가) 정답입니다."
 
+def get_explanation(question_type, correct_answer, selected_option, options=None):
+    if question_type == "essay":
+        return f"선택하신 '{selected_option}'번이 아니라 '{correct_answer}'번이 정답입니다."
+    else:
+        if options:
+            correct_text = next((option for option in options if option.startswith(f"{correct_answer}.")), "")
+            selected_text = next((option for option in options if option.startswith(f"{selected_option.split('.')[0]}.")), "")
+            return f"'{selected_text}'이(가) 아니라 '{correct_text}'이(가) 정답입니다."
+        else:
+            return f"'{selected_option}'이(가) 아니라 '{correct_answer}'이(가) 정답입니다."
+
 def main():
     # Streamlit UI
 
@@ -244,21 +255,16 @@ def main():
 
         if st.session_state.show_answer:
             if st.session_state.selected_option is not None:
-                # 디버깅을 위한 출력
-                st.write(f"선택한 답변: {st.session_state.selected_option}")
-                st.write(f"정답: {correct_answer}")
-                
                 if st.session_state.question_type == "essay":
                     is_correct = st.session_state.selected_option == correct_answer
                 else:
-                    # 대화 문제의 경우 선택한 옵션에서 알파벳만 추출하여 비교
                     selected_letter = st.session_state.selected_option.split('.')[0].strip()
                     is_correct = selected_letter == correct_answer
                 
                 if is_correct:
                     st.success("정답입니다!")
                 else:
-                    explanation = get_explanation(st.session_state.question_type, correct_answer, st.session_state.selected_option)
+                    explanation = get_explanation(st.session_state.question_type, correct_answer, st.session_state.selected_option, options)
                     st.error(f"틀렸습니다. {explanation}")
             else:
                 st.warning("선택지를 선택해주세요.")

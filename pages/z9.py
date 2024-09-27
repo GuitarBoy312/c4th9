@@ -205,7 +205,7 @@ def get_explanation_dialogue(question, dialogue, correct_answer, selected_option
     학생의 선택: {selected_option}
 
     설명 예시: "대화에서 B가 '...'라고 했어요. 이것은 '...'라는 뜻이에요. 
-    하지만 학생이 선택한 '...'은 대화에서 언급되지 않았어요."
+    하지만 학생이 선택한 '...'은 영어로 '...'예요."
 
     설명은 2-3문장으로 짧게 해주시고, 반드시 대화의 내용만 참고해 주세요.
     """

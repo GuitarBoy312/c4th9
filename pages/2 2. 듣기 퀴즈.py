@@ -37,11 +37,11 @@ def generate_question():
     selected_answer = random.choice(answers)
     selected_korean_question = random.choice(korean_questions)
     
-    # 남성과 여성 캐릭터 목록 생성
+    # 남성과 여성 캐릭터 분리
     male_characters = [name for name, gender in characters.items() if gender == "male"]
     female_characters = [name for name, gender in characters.items() if gender == "female"]
     
-    # 무작위로 남성 또는 여성을 첫 번째 화자로 선택
+    # 무작위로 첫 번째 화자의 성별을 선택하고, 두 번째 화자는 반대 성별에서 선택
     if random.choice([True, False]):
         speaker_a = random.choice(male_characters)
         speaker_b = random.choice(female_characters)
@@ -145,7 +145,7 @@ def generate_explanation(question, correct_answer, user_answer, dialogue):
 
 # 메인 화면 구성
 st.header("✨인공지능 영어듣기 퀴즈 선생님 퀴즐링🕵️‍♀️")
-st.subheader("지금 하고 있는 일에 대한 영어듣기 퀴즈대화🕺")
+st.subheader("지금 하고 있는 일에 대한 영어듣기 퀴즈🕺")
 st.divider()
 
 #확장 설명

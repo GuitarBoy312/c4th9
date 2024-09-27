@@ -33,7 +33,7 @@ def generate_essay_question():
     {key_expression}을 이용하여CEFR A1 수준의 영어 지문을 1문장으로 작성해주세요. 
     그 다음, 지문에 관한 간단한 질문을 한국어로 만들어주세요. 
     질문을 만들 때, 지문에 맞는 화자를 포함해서 질문해 주세요. 예를 들어, 화자가 Tom이면 "톰이..." 로, 화자가 I면 "내가..."로 시작하는 질문을 생성해 주세요. A가 또는 B가로 시작하는 말은 하지마세요.
-    마지막으로, 질문에 대한 4개의 선택지를 한국어로 제공해주세요. 
+    마지막으로, 질문에 대한 4개의 선택지를 초등학생이 이해하기 쉬운 한국어로 제공해주세요. 
     정답은 선택지 중 하나여야 합니다.
     출력 형식:
     질문: (한국어 질문)
@@ -77,17 +77,17 @@ def generate_conversation_question():
     A와 B가 대화할 때 상대방의 이름을 부르면서 대화를 합니다. 
     영어 대화는 A와 B가 각각 1번 말하고 끝납니다.
     형식:
-    
+    [영어 대화]
     A: ...
     B: ...
 
     [한국어 질문]
     조건: {question_format}을 만들어야 합니다. 영어 대화에서 생성된 A와 B의 이름 중 필요한 것을 골라서 질문에 사용해야 합니다.
     질문: (한국어로 된 질문) 이 때, 선택지는 한국어로 제공됩니다.
-    1. (선택지 1)
-    2. (선택지 2)
-    3. (선택지 3)
-    4. (선택지 4)
+    A. (선택지)
+    B. (선택지)
+    C. (선택지)
+    D. (선택지)
     정답: (정답 선택지)
     """
 
@@ -127,7 +127,7 @@ def parse_question_data(data, question_type):
             elif line.startswith("질문:"):
                 question = line.replace("질문:", "").strip()
             elif re.match(r'^\d+\.', line):
-                options.append(re.sub(r'^\d+\.\s*', '', line.strip()))
+                options.append(line.strip())
             elif line.startswith("정답:"):
                 correct_answer = line.replace("정답:", "").strip()
 
@@ -151,13 +151,14 @@ def parse_question_data(data, question_type):
             else:
                 if line.startswith("질문:"):
                     question = line.replace("질문:", "").strip()
-                elif re.match(r'^\d+\.', line):
+                elif line.startswith(("A.", "B.", "C.", "D.")):
                     options.append(line.strip())
                 elif line.startswith("정답:"):
                     correct_answer = line.replace("정답:", "").strip()
 
+        # 정답에서 알파벳만 추출
         if correct_answer:
-            correct_answer = int(re.search(r'\d+', correct_answer).group())
+            correct_answer = correct_answer.split('.')[0].strip()
 
         return dialogue.strip(), question, options, correct_answer
 
@@ -268,12 +269,9 @@ def main():
             st.text(dialogue)
             st.divider() 
             st.subheader("다음 중 알맞은 답을 골라보세요.")
-            if options:  # 선택지가 있는 경우에만 라디오 버튼을 표시
-                selected_option = st.radio("", options, index=None, key="conversation_options")
-                if selected_option:
-                    st.session_state.selected_option = int(re.search(r'\d+', selected_option).group())
-            else:
-                st.write("선택지가 없습니다.")
+            selected_option = st.radio("", options, index=None, key="conversation_options")
+            if selected_option:
+                st.session_state.selected_option = selected_option
 
         if st.button("정답 확인"):
             st.session_state.show_answer = True
@@ -282,18 +280,17 @@ def main():
             if st.session_state.selected_option is not None:
                 if st.session_state.question_type == "essay":
                     is_correct = st.session_state.selected_option == correct_answer
-                    selected_text = options[st.session_state.selected_option - 1]
                 else:
-                    is_correct = st.session_state.selected_option == correct_answer
-                    selected_text = re.sub(r'^\d+\.\s*', '', options[st.session_state.selected_option - 1])
+                    selected_letter = st.session_state.selected_option.split('.')[0].strip()
+                    is_correct = selected_letter == correct_answer
                 
                 if is_correct:
                     st.success("정답입니다!")
                 else:
                     if st.session_state.question_type == "essay":
-                        explanation = get_explanation_essay(question, passage, correct_answer, selected_text)
+                        explanation = get_explanation_essay(question, passage, correct_answer, st.session_state.selected_option)
                     else:
-                        explanation = get_explanation_dialogue(question, dialogue, correct_answer, selected_text)
+                        explanation = get_explanation_dialogue(question, dialogue, correct_answer, st.session_state.selected_option)
                     st.error(f"틀렸습니다. {explanation}")
             else:
                 st.warning("선택지를 선택해주세요.")

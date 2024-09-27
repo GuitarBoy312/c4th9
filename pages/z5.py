@@ -172,6 +172,7 @@ def get_explanation(question, correct_answer, selected_option):
     prompt = f"""
     다음 영어 문제에 대해 학생이 틀린 답을 선택했습니다. 
     왜 틀렸는지 초등학생이 이해할 수 있게 한국어로 간단히 설명해주세요.
+    이 때, 구체적인 단어의 뜻을 설명해 주세요.
     
     문제: {question}
     정답: {correct_answer}

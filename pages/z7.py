@@ -192,15 +192,27 @@ def get_explanation_essay(question, passage, correct_answer, selected_option):
 
 def get_explanation_dialogue(question, dialogue, correct_answer, selected_option):
     prompt = f"""
-    다음 영어 대화에 대한 문제에서 학생이 틀린 답을 선택했습니다. 
+    다음 영어 대화에 대한 문제입니다. 학생이 틀린 답을 선택했습니다. 
     왜 틀렸는지 초등학생이 이해할 수 있게 한국어로 간단히 설명해주세요.
-    대화의 대답(B의 말)에 초점을
+    반드시 대화의 내용만을 바탕으로 설명해 주세요.
+
+    대화:
+    {dialogue}
+
+    문제: {question}
+    정답: {correct_answer}
+    학생의 선택: {selected_option}
+
+    설명 예시: "대화에서 B가 '...'라고 했어요. 이것은 '...'라는 뜻이에요. 
+    하지만 학생이 선택한 '...'은 대화에서 언급되지 않았어요."
+
+    설명은 2-3문장으로 짧게 해주시고, 반드시 대화의 내용만 참고해 주세요.
     """
     
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
-            {"role": "system", "content": "당신은 친절한 초등학교 영어 선생님입니다."},
+            {"role": "system", "content": "당신은 친절한 초등학교 영어 선생님입니다. 주어진 대화 내용만을 바탕으로 설명해야 합니다."},
             {"role": "user", "content": prompt}
         ]
     )

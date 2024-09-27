@@ -173,7 +173,8 @@ def get_explanation(question, correct_answer, selected_option):
     다음 영어 문제에 대해 학생이 틀린 답을 선택했습니다. 
     왜 틀렸는지 초등학생이 이해할 수 있게 한국어로 간단히 설명해주세요.
     이 때, 구체적인 단어의 뜻을 설명해 주세요.
-    
+    예를 들면, "학생이 선택한 cooking은 요리하다라는 뜻이예요. 하지만 문제에서는 I'm dancing, 즉 춤을 추고 있다고 했기 때문에 틀렸어요."
+    문제에서 제시한 대화를 참고해서 설명해주세요.
     문제: {question}
     정답: {correct_answer}
     학생의 선택: {selected_option}

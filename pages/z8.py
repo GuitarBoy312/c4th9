@@ -36,8 +36,9 @@ def generate_essay_question():
     마지막으로, 질문에 대한 4개의 선택지를 한국어로 제공해주세요. 
     정답은 선택지 중 하나여야 합니다.
     출력 형식:
-    (한국어 질문)
-    (영어 지문)
+    질문: (한국어 질문)
+    지문: (영어 지문)
+    선택지:
     1. (선택지 1)
     2. (선택지 2)
     3. (선택지 3)
@@ -83,10 +84,10 @@ def generate_conversation_question():
     [한국어 질문]
     조건: {question_format}을 만들어야 합니다. 영어 대화에서 생성된 A와 B의 이름 중 필요한 것을 골라서 질문에 사용해야 합니다.
     질문: (한국어로 된 질문) 이 때, 선택지는 한국어로 제공됩니다.
-    1. (선택지)
-    2. (선택지)
-    3. (선택지)
-    4. (선택지)
+    A. (선택지)
+    B. (선택지)
+    C. (선택지)
+    D. (선택지)
     정답: (정답 선택지)
     """
 
@@ -166,7 +167,7 @@ def get_explanation_essay(question, passage, correct_answer, selected_option):
     다음 영어 지문에 대한 문제에서 학생이 틀린 답을 선택했습니다. 
     왜 틀렸는지 EFL 환경의 초등학생이 이해할 수 있게 설명해주세요.
     지문의 내용에 초점을 맞춰 설명해 주세요.
-    틀린 선택지의 내용을 영어로 뭐라고 표현하는지도 내용에 포함해 주세요.
+    틀린 답을 영어로 뭐라고 표현하는지도 알려주세요.
 
     지문: {passage}
 
@@ -194,7 +195,7 @@ def get_explanation_dialogue(question, dialogue, correct_answer, selected_option
     다음 영어 대화에 대한 문제입니다. 학생이 틀린 답을 선택했습니다. 
     왜 틀렸는지 EFL 환경의 초등학생이 이해할 수 있게 한국어로 간단히 설명해주세요.
     반드시 대화의 내용만을 바탕으로 설명해 주세요.
-    틀린 선택지의 내용을 영어로 뭐라고 표현하는지도 내용에 포함해 주세요.
+    틀린 답을 영어로 뭐라고 표현하는지도 알려주세요.
 
     대화:
     {dialogue}
@@ -204,7 +205,7 @@ def get_explanation_dialogue(question, dialogue, correct_answer, selected_option
     학생의 선택: {selected_option}
 
     설명 예시: "대화에서 B가 '...'라고 했어요. 이것은 '...'라는 뜻이에요. 
-    하지만 학생이 선택한 '...'은  영어로 '...'라고 표현할 수 있어요."
+    하지만 학생이 선택한 '...'은 대화에서 언급되지 않았어요."
 
     설명은 2-3문장으로 짧게 해주시고, 반드시 대화의 내용만 참고해 주세요.
     """
@@ -265,7 +266,7 @@ def main():
             st.divider()
 
             st.subheader("다음 중 알맞은 답을 골라보세요.")
-            selected_option = st.radio("", options, index=None, key="essay_options")
+            selected_option = st.radio("선택지", options, index=None, key="essay_options")
             if selected_option:
                 st.session_state.selected_option = options.index(selected_option) + 1
 
@@ -279,7 +280,7 @@ def main():
             st.text(dialogue)
             st.divider() 
             st.subheader("다음 중 알맞은 답을 골라보세요.")
-            selected_option = st.radio("", options, index=None, key="conversation_options")
+            selected_option = st.radio("선택지", options, index=None, key="conversation_options")
             if selected_option:
                 st.session_state.selected_option = selected_option
 
@@ -303,7 +304,7 @@ def main():
                         explanation = get_explanation_dialogue(question, dialogue, correct_answer, st.session_state.selected_option)
                     st.error(f"틀렸습니다. {explanation}")
             else:
-                st.warning("정답을 선택해주세요.")
+                st.warning("선택지를 선택해주세요.")
 
 if __name__ == "__main__":
     main()

@@ -36,9 +36,8 @@ def generate_essay_question():
     마지막으로, 질문에 대한 4개의 선택지를 한국어로 제공해주세요. 
     정답은 선택지 중 하나여야 합니다.
     출력 형식:
-    질문: (한국어 질문)
-    지문: (영어 지문)
-    선택지:
+    (한국어 질문)
+    (영어 지문)
     1. (선택지 1)
     2. (선택지 2)
     3. (선택지 3)
@@ -266,7 +265,7 @@ def main():
             st.divider()
 
             st.subheader("다음 중 알맞은 답을 골라보세요.")
-            selected_option = st.radio("선택지", options, index=None, key="essay_options")
+            selected_option = st.radio("", options, index=None, key="essay_options")
             if selected_option:
                 st.session_state.selected_option = options.index(selected_option) + 1
 
@@ -280,7 +279,7 @@ def main():
             st.text(dialogue)
             st.divider() 
             st.subheader("다음 중 알맞은 답을 골라보세요.")
-            selected_option = st.radio("선택지", options, index=None, key="conversation_options")
+            selected_option = st.radio("", options, index=None, key="conversation_options")
             if selected_option:
                 st.session_state.selected_option = selected_option
 
@@ -304,7 +303,7 @@ def main():
                         explanation = get_explanation_dialogue(question, dialogue, correct_answer, st.session_state.selected_option)
                     st.error(f"틀렸습니다. {explanation}")
             else:
-                st.warning("선택지를 선택해주세요.")
+                st.warning("정답을 선택해주세요.")
 
 if __name__ == "__main__":
     main()

@@ -50,8 +50,8 @@ def generate_question():
     formatted_question = selected_question.format(name=speaker_b)
     
     key_expression = f"""
-A: {speaker_a}: {formatted_question}
-B: {speaker_b}: {selected_answer}
+{speaker_a}: {formatted_question}
+{speaker_b}: {selected_answer}
 """
     prompt = f"""{key_expression}을 생성해주세요. 
     그 후 대화 내용에 관한 객관식 질문을 한국어로 만들어주세요.  

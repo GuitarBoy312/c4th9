@@ -14,7 +14,7 @@ characters = {
 }
 
 def generate_question():
-    characters = list(characters.keys())
+    # characters = list(characters.keys())  # 이 줄을 제거하거나 주석 처리합니다.
     
     questions = [
         "What are you doing, {name}?"
@@ -39,8 +39,8 @@ def generate_question():
     selected_question = random.choice(questions)
     selected_answer = random.choice(answers)
     selected_korean_question = random.choice(korean_questions)
-    speaker_a = random.choice(characters)
-    speaker_b = random.choice([c for c in characters if c != speaker_a])
+    speaker_a = random.choice(list(characters.keys()))
+    speaker_b = random.choice([c for c in characters.keys() if c != speaker_a])
     
     formatted_question = selected_question.format(name=speaker_b)
     
@@ -122,7 +122,7 @@ def generate_explanation(question, correct_answer, user_answer, dialogue):
     정답: {correct_answer}
     학생의 답변: {user_answer}
     
-    이 학생에게 왜 그들의 답변이 틀렸는지, 그리고 정답이 무엇인지 설명해주세요. 
+    이 학생에게 ��� 그들의 답변이 틀렸는지, 그리고 정답이 무엇인지 설명해주세요. 
     설명은 친절하고 격려하는 톤으로 작성해주세요. 
     대화의 내용을 참조하여 구체적으로 설명해주세요.
     """
@@ -152,7 +152,7 @@ with st.expander("❗❗ 글상자를 펼쳐 사용방법을 읽어보세요 �
     4️⃣ 정답과 대화 스크립트 확인하기.<br>
     <br>
     🙏 퀴즐링은 완벽하지 않을 수 있어요.<br> 
-    🙏 그럴 때에는 [새 문제 만들기] 버튼을 눌러주세요.
+    🙏 그럴 때에는 [새 ���제 만들기] 버튼을 눌러주세요.
     """
     ,  unsafe_allow_html=True)
 

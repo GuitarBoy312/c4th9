@@ -174,8 +174,7 @@ def get_explanation_essay(question, passage, correct_answer, selected_option):
     정답: {correct_answer}
     학생의 선택: {selected_option}
 
-    설명 예시: "지문에서 '...'라고 했어요. 이것은 '...'를 의미해요. 
-    하지만 학생이 선택한 '...'은 '...'를 의미하므로 틀렸어요."
+
 
     설명은 1-2문장으로 짧게 해주세요.
     """

@@ -162,18 +162,22 @@ def parse_question_data(data, question_type):
 
         return dialogue.strip(), question, options, correct_answer
 
-def get_explanation(question, correct_answer, selected_option):
+def get_explanation(question, dialogue, correct_answer, selected_option):
     prompt = f"""
-    다음 영어 문제에 대해 학생이 틀린 답을 선택했습니다. 
+    다음 영어 대화에 대한 문제에서 학생이 틀린 답을 선택했습니다. 
     왜 틀렸는지 초등학생이 이해할 수 있게 한국어로 간단히 설명해주세요.
-    이 때, 구체적인 단어의 뜻을 설명해 주세요.
-    예를 들면, "학생이 선택한 ...는 영어로 ... 이예요. 하지만 문제에서는 ...., 즉 ..... 있다고 했기 때문에 틀렸어요."
-    문제에서 제시한 {correct_answer}를 참고해서 설명해주세요.
-    
+    대화의 대답(B의 말)에 초점을 맞춰 설명해 주세요.
+
+    대화:
+    {dialogue}
+
     문제: {question}
     정답: {correct_answer}
     학생의 선택: {selected_option}
-    
+
+    설명 예시: "대화에서 B가 '...'라고 했어요. 이것은 '...'를 의미해요. 
+    하지만 학생이 선택한 '...'은 '...'를 의미하므로 틀렸어요."
+
     설명은 1-2문장으로 짧게 해주세요.
     """
     
@@ -265,7 +269,7 @@ def main():
                 if is_correct:
                     st.success("정답입니다!")
                 else:
-                    explanation = get_explanation(question, correct_answer, st.session_state.selected_option)
+                    explanation = get_explanation(question, dialogue, correct_answer, st.session_state.selected_option)
                     st.error(f"틀렸습니다. {explanation}")
             else:
                 st.warning("선택지를 선택해주세요.")

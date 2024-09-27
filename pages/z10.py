@@ -127,7 +127,7 @@ def parse_question_data(data, question_type):
             elif line.startswith("질문:"):
                 question = line.replace("질문:", "").strip()
             elif re.match(r'^\d+\.', line):
-                options.append(line.strip())
+                options.append(re.sub(r'^\d+\.\s*', '', line.strip()))
             elif line.startswith("정답:"):
                 correct_answer = line.replace("정답:", "").strip()
 
@@ -280,7 +280,8 @@ def main():
             st.text(dialogue)
             st.divider() 
             st.subheader("다음 중 알맞은 답을 골라보세요.")
-            selected_option = st.radio("", options, index=None, key="conversation_options")
+            numbered_options = [f"{i+1}. {option}" for i, option in enumerate(options)]
+            selected_option = st.radio("", numbered_options, index=None, key="conversation_options")
             if selected_option:
                 st.session_state.selected_option = selected_option.split('.')[0].strip()
 

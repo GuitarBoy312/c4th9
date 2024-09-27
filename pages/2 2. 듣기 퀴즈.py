@@ -7,34 +7,47 @@ import re
 # OpenAI 클라이언트 초기화
 client = OpenAI(api_key=st.secrets["openai_api_key"])
 
+# 캐릭터와 성별 정의
+characters = {
+    "Paul": "male", "Jello": "male", "Uju": "male", "Khan": "male", "Eric": "male",
+    "Bora": "female", "Tina": "female", "Amy": "female"
+}
+
 def generate_question():
-    characters = ["Paul", "Jello", "Uju", "Bora", "Tina", "Khan", "Amy", "Eric"]
-    
     questions = [
         "What are you doing, {name}?"
     ]
     
     answers = [
-        "I'm singing.",
-        "I'm dancing.",
-        "I'm cooking.",
-        "I'm sleeping.",
-        "I'm making a doll.",
-        "I'm cleaning the house.",
-        "I'm watching TV.",
-        "I'm washing dishes."
+        "I'm singing. 🎤",
+        "I'm dancing. 💃",
+        "I'm cooking. 👨‍🍳",
+        "I'm sleeping. 😴",
+        "I'm making a doll. 🧸",
+        "I'm cleaning the house. 🧹",
+        "I'm watching TV. 📺",
+        "I'm washing dishes. 🍽️"
     ]
     
     korean_questions = [
-        "무엇에 대해 이야기 했나요?",
         "{name}은 무엇을 하고 있나요?"
     ]
     
     selected_question = random.choice(questions)
     selected_answer = random.choice(answers)
     selected_korean_question = random.choice(korean_questions)
-    speaker_a = random.choice(characters)
-    speaker_b = random.choice([c for c in characters if c != speaker_a])
+    
+    # 남성과 여성 캐릭터 목록 생성
+    male_characters = [name for name, gender in characters.items() if gender == "male"]
+    female_characters = [name for name, gender in characters.items() if gender == "female"]
+    
+    # 무작위로 남성 또는 여성을 첫 번째 화자로 선택
+    if random.choice([True, False]):
+        speaker_a = random.choice(male_characters)
+        speaker_b = random.choice(female_characters)
+    else:
+        speaker_a = random.choice(female_characters)
+        speaker_b = random.choice(male_characters)
     
     formatted_question = selected_question.format(name=speaker_b)
     
@@ -82,7 +95,8 @@ def split_dialogue(text):
             speakers[speaker].append(content)
     return speakers
 
-def text_to_speech(text, voice):
+def text_to_speech(text, speaker):
+    voice = "alloy" if characters[speaker] == "female" else "echo"
     response = client.audio.speech.create(
         model="tts-1",
         voice=voice,
@@ -101,8 +115,8 @@ def generate_dialogue_audio(dialogue):
     
     for speaker, lines in speakers.items():
         text = " ".join(lines)
-        voice = "alloy" if speaker == "A" else "echo"  # A는 여성 목소리, B는 남성 목소리
-        audio_tag = text_to_speech(text, voice)
+        speaker_name = re.search(r'([A-Za-z]+):', lines[0]).group(1)  # 대화에서 화자 이름 추출
+        audio_tag = text_to_speech(text, speaker_name)
         audio_tags.append(audio_tag)
     
     return "".join(audio_tags)
@@ -115,7 +129,7 @@ def generate_explanation(question, correct_answer, user_answer, dialogue):
     정답: {correct_answer}
     학생의 답변: {user_answer}
     
-    이 학생에게 왜 그들의 답변이 틀렸는지, 그리고 정답이 무엇인지 설명해주세요. 
+    이 학생에게  그들의 답변이 틀렸는지, 그리고 정답이 무엇인지 설명해주세요. 
     설명은 친절하고 격려하는 톤으로 작성해주세요. 
     대화의 내용을 참조하여 구체적으로 설명해주세요.
     """
@@ -145,7 +159,7 @@ with st.expander("❗❗ 글상자를 펼쳐 사용방법을 읽어보세요 �
     4️⃣ 정답과 대화 스크립트 확인하기.<br>
     <br>
     🙏 퀴즐링은 완벽하지 않을 수 있어요.<br> 
-    🙏 그럴 때에는 [새 문제 만들기] 버튼을 눌러주세요.
+    🙏 그럴 때에는 [새 제 만들기] 버튼을 눌러주세요.
     """
     ,  unsafe_allow_html=True)
 

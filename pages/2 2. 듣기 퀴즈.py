@@ -172,10 +172,6 @@ def get_explanation_essay(question, passage, correct_answer, selected_option):
     문제: {question}
     정답: {correct_answer}
     학생의 선택: {selected_option}
-
-
-
-    설명은 1-2문장으로 짧게 해주세요.
     """
     
     response = client.chat.completions.create(
@@ -200,11 +196,6 @@ def get_explanation_dialogue(question, dialogue, correct_answer, selected_option
     문제: {question}
     정답: {correct_answer}
     학생의 선택: {selected_option}
-
-    설명 예시: "대화에서 B가 '...'라고 영어로 표현 했어요. 이것은 한국어로 '...'라는 뜻이에요. 
-    하지만 학생이 선택한 '...'은 영어로 '...'라고 표현해요. "
-
-    설명은 2-3문장으로 짧게 해주시고, 반드시 대화의 내용만 참고해 주세요.
     """
     
     response = client.chat.completions.create(

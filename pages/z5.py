@@ -168,23 +168,27 @@ def parse_question_data(data, question_type):
 
         return dialogue.strip(), question, options, correct_answer
 
-def get_explanation(question_type, correct_answer, selected_option):
-    if question_type == "essay":
-        return f"선택하신 '{selected_option}'번이 아니라 '{correct_answer}'번이 정답입니다."
-    else:
-        correct_text = next(option for option in options if option.startswith(f"{correct_answer}."))
-        return f"'{selected_option}'이(가) 아니라 '{correct_text}'이(가) 정답입니다."
-
-def get_explanation(question_type, correct_answer, selected_option, options=None):
-    if question_type == "essay":
-        return f"선택하신 '{selected_option}'번이 아니라 '{correct_answer}'번이 정답입니다."
-    else:
-        if options:
-            correct_text = next((option for option in options if option.startswith(f"{correct_answer}.")), "")
-            selected_text = next((option for option in options if option.startswith(f"{selected_option.split('.')[0]}.")), "")
-            return f"'{selected_text}'이(가) 아니라 '{correct_text}'이(가) 정답입니다."
-        else:
-            return f"'{selected_option}'이(가) 아니라 '{correct_answer}'이(가) 정답입니다."
+def get_explanation(question, correct_answer, selected_option):
+    prompt = f"""
+    다음 영어 문제에 대해 학생이 틀린 답을 선택했습니다. 
+    왜 틀렸는지 초등학생이 이해할 수 있게 한국어로 간단히 설명해주세요.
+    
+    문제: {question}
+    정답: {correct_answer}
+    학생의 선택: {selected_option}
+    
+    설명은 1-2문장으로 짧게 해주세요.
+    """
+    
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "당신은 친절한 초등학교 영어 선생님입니다."},
+            {"role": "user", "content": prompt}
+        ]
+    )
+    
+    return response.choices[0].message.content.strip()
 
 def main():
     # Streamlit UI
@@ -264,7 +268,7 @@ def main():
                 if is_correct:
                     st.success("정답입니다!")
                 else:
-                    explanation = get_explanation(st.session_state.question_type, correct_answer, st.session_state.selected_option, options)
+                    explanation = get_explanation(question, correct_answer, st.session_state.selected_option)
                     st.error(f"틀렸습니다. {explanation}")
             else:
                 st.warning("선택지를 선택해주세요.")

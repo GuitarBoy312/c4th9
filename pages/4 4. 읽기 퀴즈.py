@@ -193,6 +193,7 @@ def main():
 
             st.divider()
             st.write(passage)
+            st.divider()
 
             st.subheader("다음 중 알맞은 답을 골라보세요.")
             for i, option in enumerate(options, 1):

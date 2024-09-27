@@ -61,8 +61,8 @@ def generate_question():
     B는 다음과 같이 한문장을 말하세요.
     형식:
     [영어 대화]
-    A: {speaker_a}: {formatted_question}
-    B: {speaker_b}: {selected_answer}
+    {speaker_a}: {formatted_question}
+    {speaker_b}: {selected_answer}
 
     [한국어 질문]
     조건: {selected_korean_question.format(name=speaker_b)}을 만들어야 합니다.

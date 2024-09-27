@@ -167,6 +167,7 @@ def get_explanation_essay(question, passage, correct_answer, selected_option):
     다음 영어 지문에 대한 문제에서 학생이 틀린 답을 선택했습니다. 
     왜 틀렸는지 EFL 환경의 초등학생이 이해할 수 있게 설명해주세요.
     지문의 내용에 초점을 맞춰 설명해 주세요.
+    틀린 답을 영어로 뭐라고 표현하는지도 알려주세요.
 
     지문: {passage}
 
@@ -192,8 +193,9 @@ def get_explanation_essay(question, passage, correct_answer, selected_option):
 def get_explanation_dialogue(question, dialogue, correct_answer, selected_option):
     prompt = f"""
     다음 영어 대화에 대한 문제입니다. 학생이 틀린 답을 선택했습니다. 
-    왜 틀렸는지 초등학생이 이해할 수 있게 한국어로 간단히 설명해주세요.
+    왜 틀렸는지 EFL 환경의 초등학생이 이해할 수 있게 한국어로 간단히 설명해주세요.
     반드시 대화의 내용만을 바탕으로 설명해 주세요.
+    틀린 답을 영어로 뭐라고 표현하는지도 알려주세요.
 
     대화:
     {dialogue}

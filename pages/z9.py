@@ -173,10 +173,6 @@ def get_explanation_essay(question, passage, correct_answer, selected_option):
     문제: {question}
     정답: {correct_answer}
     학생의 선택: {selected_option}
-
-
-
-    설명은 1-2문장으로 짧게 해주세요.
     """
     
     response = client.chat.completions.create(

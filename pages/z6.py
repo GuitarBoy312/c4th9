@@ -237,13 +237,13 @@ def main():
         st.session_state.question_type = None
         st.session_state.selected_option = None
         st.session_state.show_answer = False
-        st.session_state.last_checked_option = None  # 새로운 상태 변수 추가
+        st.session_state.last_checked_option = None
 
     if st.button("새로운 문제 생성"):
         st.session_state.question_data, st.session_state.question_type = generate_question()
         st.session_state.selected_option = None
         st.session_state.show_answer = False
-        st.session_state.last_checked_option = None  # 새 문제 생성 시 초기화
+        st.session_state.last_checked_option = None
 
     if st.session_state.question_data:
         if st.session_state.question_type == "essay":
@@ -258,8 +258,7 @@ def main():
 
             st.subheader("다음 중 알맞은 답을 골라보세요.")
             selected_option = st.radio("", options, index=None, key="essay_options")
-            if selected_option:
-                st.session_state.selected_option = selected_option
+            st.session_state.selected_option = selected_option
 
         else:
             dialogue, question, options, correct_answer = parse_question_data(st.session_state.question_data, "conversation")
@@ -272,15 +271,13 @@ def main():
             st.divider() 
             st.subheader("다음 중 알맞은 답을 골라보세요.")
             selected_option = st.radio("", options, index=None, key="conversation_options")
-            if selected_option:
-                st.session_state.selected_option = selected_option
+            st.session_state.selected_option = selected_option
 
         if st.button("정답 확인"):
             st.session_state.show_answer = True
-            st.session_state.last_checked_option = st.session_state.selected_option  # 현재 선택된 옵션 저장
+            st.session_state.last_checked_option = st.session_state.selected_option
 
         if st.session_state.show_answer and st.session_state.last_checked_option:
-            # 선택한 답 표시 (파란색 바)
             st.markdown(f"""
             <div style='background-color: #E6F3FF; padding: 10px; border-radius: 5px; margin-top: 10px;'>
             선택한 답: {st.session_state.last_checked_option}

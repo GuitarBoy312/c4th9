@@ -151,14 +151,13 @@ def parse_question_data(data, question_type):
             else:
                 if line.startswith("질문:"):
                     question = line.replace("질문:", "").strip()
-                elif line.startswith(("A.", "B.", "C.", "D.")):
+                elif re.match(r'^\d+\.', line):
                     options.append(line.strip())
                 elif line.startswith("정답:"):
                     correct_answer = line.replace("정답:", "").strip()
 
-        # 정답에서 알파벳만 추출
         if correct_answer:
-            correct_answer = correct_answer.split('.')[0].strip()
+            correct_answer = int(correct_answer)
 
         return dialogue.strip(), question, options, correct_answer
 
@@ -280,10 +279,13 @@ def main():
             st.text(dialogue)
             st.divider() 
             st.subheader("다음 중 알맞은 답을 골라보세요.")
-            numbered_options = [f"{i+1}. {option}" for i, option in enumerate(options)]
-            selected_option = st.radio("", numbered_options, index=None, key="conversation_options")
-            if selected_option:
-                st.session_state.selected_option = selected_option.split('.')[0].strip()
+            if options:  # 선택지가 있는 경우에만 라디오 버튼을 표시
+                numbered_options = [f"{i+1}. {option}" for i, option in enumerate(options)]
+                selected_option = st.radio("", numbered_options, index=None, key="conversation_options")
+                if selected_option:
+                    st.session_state.selected_option = int(selected_option.split('.')[0])
+            else:
+                st.write("선택지가 없습니다.")
 
         if st.button("정답 확인"):
             st.session_state.show_answer = True

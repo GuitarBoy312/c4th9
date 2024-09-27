@@ -56,20 +56,14 @@ def generate_essay_question():
 
 def generate_conversation_question():
     answer = random.choice([
-    "I'm singing in the shower.",
-    "I'm dancing to my favorite song.",
-    "I'm cooking dinner for my family.",
-    "I'm sleeping in my comfortable bed.",
-    "I'm making a doll for my little sister.",
-    "I'm cleaning the house before my parents come home.",
-    "I'm watching TV in the living room.",
-    "I'm washing dishes after lunch.",
-    "I'm reading a book in my room.",
-    "I'm playing video games on my computer.",
-    "I'm doing my homework at my desk.",
-    "I'm talking on the phone with my friend.",
-    "I'm writing in my diary.",
-    "I'm exercising in the garden."])
+     "I'm singing.",
+        "I'm dancing.",
+        "I'm cooking.",
+        "I'm sleeping.",
+        "I'm making a doll.",
+        "I'm cleaning the house.",
+        "I'm watching TV.",
+        "I'm washing dishes."])
     question_format = "대화를 읽고 무엇을 하고 있는지에 관해 묻는 질문"
 
     key_expression = f'''

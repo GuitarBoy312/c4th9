@@ -22,7 +22,11 @@ def generate_question():
     word, emoji = random.choice(list(word_emojis.items()))
     blanked_word = create_fill_in_the_blank(word)
     
-    options = [random.choice(string.ascii_lowercase) for _ in range(4)]
+    # 정답 글자 선택
+    correct_letter = word[blanked_word.index('_')].lower()
+    
+    # 정답을 포함한 옵션 생성
+    options = [correct_letter]
     while len(options) < 4:
         random_letter = random.choice(string.ascii_lowercase)
         if random_letter not in options:
@@ -30,7 +34,7 @@ def generate_question():
     
     random.shuffle(options)
     
-    return blanked_word, emoji, options, random.choice(options)
+    return blanked_word, emoji, options, correct_letter
 
 # Streamlit UI
 st.header("✨인공지능 영어단어 퀴즈 선생님 퀴즐링🕵️‍♀️")
@@ -84,9 +88,8 @@ if 'question_generated' in st.session_state and st.session_state.question_genera
                 st.info(f"선택한 답: {selected_option}")
                 if selected_option == st.session_state.correct_letter:  
                     st.success("정답입니다!")
-                    st.write(f"정답 단어: {st.session_state.blanked_word.replace('_', st.session_state.correct_letter)} {st.session_state.emoji}")
                 else:
                     st.error(f"틀렸습니다. 정답은 {st.session_state.correct_letter}입니다.")
-                    st.write(f"정답 단어: {st.session_state.blanked_word.replace('_', st.session_state.correct_letter)} {st.session_state.emoji}")
+                st.write(f"정답 단어: {st.session_state.blanked_word.replace('_', st.session_state.correct_letter)} {st.session_state.emoji}")
             else:
                 st.warning("답을 선택해주세요.")

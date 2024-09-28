@@ -19,8 +19,11 @@ def create_fill_in_the_blank(word):
     return ' '.join(result)
 
 def generate_question():
-    word, emoji = random.choice(list(word_emojis.items()))
-    blanked_word = create_fill_in_the_blank(word)
+    while True:
+        word, emoji = random.choice(list(word_emojis.items()))
+        blanked_word = create_fill_in_the_blank(word)
+        if '_' in blanked_word:  # 빈칸이 있는지 확인
+            break
     
     # 정답 글자 선택
     correct_letter = word[blanked_word.index('_')].lower()

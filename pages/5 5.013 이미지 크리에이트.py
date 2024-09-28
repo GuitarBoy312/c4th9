@@ -20,7 +20,7 @@ def generate_image(word):
         response = client.images.generate(
             model="dall-e-3",
             prompt=f"A simple, child-friendly illustration of {word}. The image should be cute and suitable for elementary school students.",
-            size="512x512",
+            size="1024x1024",
             quality="standard",
             n=1,
         )
@@ -95,7 +95,7 @@ if st.button("새 문제 만들기"):
 
 if st.session_state.question_generated:
     st.markdown("### 문제")
-    st.write(f"다음 그림과 이모티콘을 참고하여 빈칸을 채워 전체 단어를 입력하세요: {st.session_state.blanked_word} {st.session_state.emoji}")
+    st.write(f"빈칸을 채워 전체 단어를 입력하세요: {st.session_state.blanked_word} {st.session_state.emoji}")
     
     if st.session_state.image_url:
         st.image(st.session_state.image_url, caption="단어 관련 이미지", width=256)  # 너비를 256으로 설정

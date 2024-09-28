@@ -12,10 +12,17 @@ word_emojis = {
 
 def create_fill_in_the_blank(word):
     words = word.split()
-    result = []
-    for w in words:
-        blank_index = random.randint(0, len(w) - 1)
-        result.append(w[:blank_index] + '_' + w[blank_index + 1:])
+    if len(words) > 1:
+        # 두 단어 이상인 경우, 랜덤하게 하나의 단어만 선택하여 빈칸 생성
+        word_to_blank = random.choice(words)
+        blank_index = random.randint(0, len(word_to_blank) - 1)
+        blanked_word = word_to_blank[:blank_index] + '_' + word_to_blank[blank_index + 1:]
+        result = [w if w != word_to_blank else blanked_word for w in words]
+    else:
+        # 한 단어인 경우, 기존 방식대로 빈칸 생성
+        blank_index = random.randint(0, len(word) - 1)
+        result = [word[:blank_index] + '_' + word[blank_index + 1:]]
+    
     return ' '.join(result)
 
 def generate_question():

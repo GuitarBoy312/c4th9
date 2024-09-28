@@ -23,15 +23,15 @@ def generate_question():
     else:
         num_blanks = 4
     
-    # 빈칸의 위치를 랜덤하게 선택
-    blank_indices = random.sample(range(word_length), num_blanks)
+    # 빈칸의 위치를 랜덤하게 선택 (공백 제외)
+    non_space_indices = [i for i, char in enumerate(word_chars) if char != ' ']
+    blank_indices = random.sample(non_space_indices, num_blanks)
     
     # 빈칸을 정확히 표시
     for i in blank_indices:
         word_chars[i] = '_'
     
-    # 모든 문자와 빈칸 사이에 공백 추가
-    blanked_word = ' '.join(word_chars)
+    blanked_word = ''.join(word_chars)
     
     return blanked_word, emoji, word
 

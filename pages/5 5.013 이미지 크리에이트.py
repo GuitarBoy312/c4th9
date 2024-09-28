@@ -19,7 +19,7 @@ def generate_image(word):
     try:
         response = client.images.generate(
             model="dall-e-3",
-            prompt=f"{word}",
+            prompt=f"simple illust of {word}",
             size="256x256",
             n=1,
         )

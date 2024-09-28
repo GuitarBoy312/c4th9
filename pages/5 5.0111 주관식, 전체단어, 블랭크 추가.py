@@ -22,11 +22,14 @@ def generate_question():
     else:
         num_blanks = 4
     
-    # 모든 위치에서 빈칸을 선택할 수 있도록 함
-    blank_indices = random.sample(range(word_length), num_blanks)
+    # 빈칸의 위치를 랜덤하게 선택
+    blank_indices = sorted(random.sample(range(word_length), num_blanks))
     
     # 빈칸을 정확히 표시
-    blanked_word = ''.join('_' if i in blank_indices else word[i] for i in range(word_length))
+    blanked_word = list(word)
+    for index in blank_indices:
+        blanked_word[index] = '_'
+    blanked_word = ''.join(blanked_word)
     
     return blanked_word, emoji, word
 

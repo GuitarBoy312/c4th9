@@ -18,14 +18,13 @@ word_emojis = {
 def generate_image(word):
     try:
         response = client.images.generate(
-            model="dall-e-3",
+            model="dall-e-2",
             prompt=f"A simple, child-friendly illustration of {word}",
-            size="1024x1024",
-            quality="standard",
+            size="256x256",
             n=1,
         )
         image_url = response.data[0].url
-        return image_url
+        return image_url 
     except Exception as e:
         st.error(f"이미지 생성 중 오류 발생: {str(e)}")
         return None

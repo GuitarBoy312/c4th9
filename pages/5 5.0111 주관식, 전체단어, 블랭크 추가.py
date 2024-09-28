@@ -29,7 +29,9 @@ def generate_question():
     blanked_word = list(word)
     for index in blank_indices:
         blanked_word[index] = '_'
-    blanked_word = ''.join(blanked_word)
+    
+    # 공백을 포함한 단어의 경우 처리
+    blanked_word = ' '.join(blanked_word).replace('_ _', ' ')
     
     return blanked_word, emoji, word
 
@@ -73,7 +75,7 @@ if st.button("새 문제 만들기"):
 if st.session_state.question_generated:
     st.markdown("### 문제")
     st.write(f"빈칸을 채워 전체 단어를 입력하세요: {st.session_state.blanked_word} {st.session_state.emoji}")
-    st.write(f"(힌트: 이 단어는 {len(st.session_state.correct_word)}개의 글자로 이루어져 있습니다.)")
+    st.write(f"(힌트: 이 단어는 {len(st.session_state.correct_word.replace(' ', ''))}개의 글자로 이루어져 있습니다.)")
       
     with st.form(key='answer_form'):
         user_answer = st.text_input("정답을 입력하세요:")

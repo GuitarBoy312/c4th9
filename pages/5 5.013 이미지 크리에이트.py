@@ -19,12 +19,13 @@ def generate_image(word):
     try:
         response = client.images.generate(
             model="dall-e-3",
-            prompt=f"simple illust of {word}",
-            size="256x256",
+            prompt=f"A simple, child-friendly illustration of {word}. The image should be cute and suitable for elementary school students.",
+            size="1024x1024",
+            quality="standard",
             n=1,
         )
         image_url = response.data[0].url
-        return image_url 
+        return image_url
     except Exception as e:
         st.error(f"이미지 생성 중 오류 발생: {str(e)}")
         return None
@@ -97,7 +98,7 @@ if st.session_state.question_generated:
     st.write(f"빈칸을 채워 전체 단어를 입력하세요: {st.session_state.blanked_word} {st.session_state.emoji}")
     
     if st.session_state.image_url:
-        st.image(st.session_state.image_url, caption="단어 관련 이미지", width=200)  # 너비를 200으로 줄임
+        st.image(st.session_state.image_url, caption="단어 관련 이미지", width=256)  # 너비를 256으로 설정
     
     with st.form(key='answer_form'):
         user_answer = st.text_input("정답을 입력하세요:")

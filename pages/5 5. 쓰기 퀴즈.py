@@ -6,8 +6,8 @@ import string
 word_emojis = {
     'busy': '😰', 'clean': '🧼', 'dish': '🍽️', 'doll': '🧸', 'homework': '📚', 
     'house': '🏠', 'kitchen': '🍳', 'sleep': '😴', 'sure': '👍', 'wash': '🧼',
-    'glove': '🧤', 'hair_band': '👸', 'hundred': '💯', 'much': '🔢', 
-    'pencil': '✏️', 'case': '💼', 'really': '❗', 'scientist': '🔬'
+    'glove': '🧤', 'hair band': '👸', 'hundred': '💯', 'much': '🔢', 
+    'pencil case': '✏️', 'really': '❗', 'scientist': '🔬'
 }
 
 def generate_question():

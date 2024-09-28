@@ -11,20 +11,12 @@ word_emojis = {
 
 def generate_question():
     word, emoji = random.choice(list(word_emojis.items()))
-    words = word.split()
-    if len(words) == 1:
-        blank_index = 0
-    else:
-        # 복합 단어의 경우 첫 번째나 마지막 단어만 선택
-        blank_index = random.choice([0, len(words) - 1])
+    blank_index = random.randint(0, len(word) - 1)
+    correct_letter = word[blank_index]
     
-    correct_word = words[blank_index]
+    blanked_word = word[:blank_index] + '_' + word[blank_index+1:]
     
-    blanked_words = words.copy()
-    blanked_words[blank_index] = '_____'
-    blanked_word = ' '.join(blanked_words)
-    
-    return blanked_word, emoji, correct_word
+    return blanked_word, emoji, correct_letter
 
 # Streamlit UI
 st.header("✨인공지능 영어단어 퀴즈 선생님 퀴즐링🕵️‍♀️")
@@ -50,14 +42,14 @@ if 'question_generated' not in st.session_state:
     st.session_state.question_generated = False
     st.session_state.blanked_word = ""
     st.session_state.emoji = ""
-    st.session_state.correct_word = ""
+    st.session_state.correct_letter = ""
 
 if st.button("새 문제 만들기"):
-    blanked_word, emoji, correct_word = generate_question()
+    blanked_word, emoji, correct_letter = generate_question()
     
     st.session_state.blanked_word = blanked_word
     st.session_state.emoji = emoji
-    st.session_state.correct_word = correct_word
+    st.session_state.correct_letter = correct_letter
     st.session_state.question_generated = True
     
     # 페이지 새로고침
@@ -65,7 +57,7 @@ if st.button("새 문제 만들기"):
 
 if st.session_state.question_generated:
     st.markdown("### 문제")
-    st.write(f"빈칸에 들어갈 단어를 입력하세요: {st.session_state.blanked_word} {st.session_state.emoji}")
+    st.write(f"빈칸에 들어갈 알파벳을 입력하세요: {st.session_state.blanked_word} {st.session_state.emoji}")
       
     with st.form(key='answer_form'):
         user_answer = st.text_input("정답을 입력하세요:")
@@ -74,11 +66,11 @@ if st.session_state.question_generated:
         if submit_button:
             if user_answer:
                 st.info(f"입력한 답: {user_answer}")
-                if user_answer.lower() == st.session_state.correct_word.lower():  
+                if user_answer.lower() == st.session_state.correct_letter.lower():  
                     st.success("정답입니다!")
-                    st.write(f"정답 단어: {st.session_state.blanked_word.replace('_____', st.session_state.correct_word)} {st.session_state.emoji}")
+                    st.write(f"정답 단어: {st.session_state.blanked_word.replace('_', st.session_state.correct_letter)} {st.session_state.emoji}")
                 else:
-                    st.error(f"틀렸습니다. 정답은 {st.session_state.correct_word}입니다.")
-                    st.write(f"정답 단어: {st.session_state.blanked_word.replace('_____', st.session_state.correct_word)} {st.session_state.emoji}")
+                    st.error(f"틀렸습니다. 정답은 {st.session_state.correct_letter}입니다.")
+                    st.write(f"정답 단어: {st.session_state.blanked_word.replace('_', st.session_state.correct_letter)} {st.session_state.emoji}")
             else:
                 st.warning("답을 입력해주세요.")

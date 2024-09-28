@@ -54,12 +54,12 @@ with st.expander("❗❗ 글상자를 펼쳐 사용방법을 읽어보세요 �
 # 세션 상태 초기화
 if 'question_generated' not in st.session_state:
     st.session_state.question_generated = False
+    st.session_state.blanked_sentence = ""
+    st.session_state.emoji = ""
+    st.session_state.options = []
+    st.session_state.correct_word = ""
 
 if st.button("새 문제 만들기"):
-    # 세션 상태 초기화
-    for key in list(st.session_state.keys()):
-        del st.session_state[key]
-    
     blanked_sentence, emoji, options, correct_word = generate_question()
     
     st.session_state.blanked_sentence = blanked_sentence
@@ -71,7 +71,7 @@ if st.button("새 문제 만들기"):
     # 페이지 새로고침
     st.rerun()
 
-if 'question_generated' in st.session_state and st.session_state.question_generated:
+if st.session_state.question_generated:
     st.markdown("### 문제")
     st.write(f"빈칸에 들어갈 단어를 고르세요: {st.session_state.blanked_sentence} {st.session_state.emoji}")
       

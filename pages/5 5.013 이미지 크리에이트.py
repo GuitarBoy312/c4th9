@@ -80,13 +80,25 @@ if st.button("새 문제 만들기"):
     st.session_state.correct_word = correct_word
     st.session_state.question_generated = True
     
+    # 이미지 생성
+    with st.spinner('이미지를 생성 중입니다...'):
+        image_url = generate_image(correct_word)
+        if image_url:
+            st.session_state.image_url = image_url
+        else:
+            st.session_state.image_url = None
+            st.warning("이미지 생성에 실패했습니다.")
+    
     # 페이지 새로고침
     st.rerun()
 
 if st.session_state.question_generated:
     st.markdown("### 문제")
     st.write(f"빈칸을 채워 전체 단어를 입력하세요: {st.session_state.blanked_word} {st.session_state.emoji}")
-      
+    
+    if st.session_state.image_url:
+        st.image(st.session_state.image_url, caption="단어 관련 이미지", width=300)
+    
     with st.form(key='answer_form'):
         user_answer = st.text_input("정답을 입력하세요:")
         submit_button = st.form_submit_button(label='정답 확인')

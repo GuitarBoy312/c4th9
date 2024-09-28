@@ -22,7 +22,15 @@ def generate_question():
     else:
         num_blanks = 4
     
+    # 모든 인덱스를 포함하여 랜덤 선택
     blank_indices = random.sample(range(word_length), num_blanks)
+    
+    # 맨 앞과 맨 끝 인덱스가 포함되지 않았다면, 50% 확률로 포함시킴
+    if 0 not in blank_indices and random.random() < 0.5:
+        blank_indices.append(0)
+    if word_length - 1 not in blank_indices and random.random() < 0.5:
+        blank_indices.append(word_length - 1)
+    
     blanked_word = ''.join('_' if i in blank_indices else word[i] for i in range(word_length))
     
     return blanked_word, emoji, word

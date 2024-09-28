@@ -49,8 +49,8 @@ if 'question_generated' not in st.session_state:
     st.session_state.correct_word = ""
     st.session_state.num_blanks = 1
 
-st.sidebar.header("설정")
-st.session_state.num_blanks = st.sidebar.slider("빈칸 개수", min_value=1, max_value=3, value=1)
+# 슬라이더를 사이드바에서 메인 영역으로 이동
+st.session_state.num_blanks = st.slider("빈칸 개수", min_value=1, max_value=3, value=1)
 
 if st.button("새 문제 만들기"):
     blanked_word, emoji, correct_word = generate_question(st.session_state.num_blanks)

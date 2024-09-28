@@ -27,7 +27,7 @@ def generate_image(word):
         image_url = response.data[0].url
         return image_url
     except Exception as e:
-        st.error(f"이미지 생성 중 오류 발생: {e}")
+        st.error(f"이미지 생성 중 오류 발생: {str(e)}")
         return None
 
 def generate_question(num_blanks):

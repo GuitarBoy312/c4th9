@@ -19,7 +19,7 @@ def generate_image(word):
     try:
         response = client.images.generate(
             model="dall-e-2",
-            prompt=f"그림을 보고 {word}를 연상할 수 있는 문자를 포함하지 않은 Illustration of {word}, best quality,ultra detailedmasterpiece, best quality, 1950s comic style, high contrast, art nouveau influences, art deco details, precise outline, captivating gaze, intricate shadows, occult imagery, high contrast, rich textures, sinister elegance, dynamic pose, light and shadow interplay, hellish vista, Alberto Breccia, Carmine Infantino, Gil Kane, dramatic chiaroscuro, deep velvety shadows, luminous highlights, intricate fabric details, ethereal beauty, commanding presence, surreal environment, vibrant  yet dark color scheme",
+            prompt=f"그림을 보고 {word}를 연상할 수 있는 Illustration of {word}, best quality,ultra detailedmasterpiece, best quality, 1950s comic style, high contrast, art nouveau influences, art deco details, precise outline, captivating gaze, intricate shadows, occult imagery, high contrast, rich textures, sinister elegance, dynamic pose, light and shadow interplay, hellish vista, Alberto Breccia, Carmine Infantino, Gil Kane, dramatic chiaroscuro, deep velvety shadows, luminous highlights, intricate fabric details, ethereal beauty, commanding presence, surreal environment, vibrant  yet dark color scheme",
             size="256x256",
             n=1,
         )

@@ -22,17 +22,10 @@ def generate_question():
     else:
         num_blanks = 4
     
-    # 연속된 빈칸을 허용하기 위해 랜덤한 시작 위치 선택
-    start_index = random.randint(0, word_length - num_blanks)
-    blank_indices = range(start_index, start_index + num_blanks)
+    # 모든 위치에서 빈칸을 선택할 수 있도록 함
+    blank_indices = random.sample(range(word_length), num_blanks)
     
-    # 50% 확률로 맨 앞이나 맨 뒤에 추가 빈칸 생성
-    if random.random() < 0.5:
-        if start_index > 0:  # 맨 앞에 빈칸 추가
-            blank_indices = [0] + list(blank_indices)
-        elif start_index + num_blanks < word_length:  # 맨 뒤에 빈칸 추가
-            blank_indices = list(blank_indices) + [word_length - 1]
-    
+    # 빈칸을 정확히 표시
     blanked_word = ''.join('_' if i in blank_indices else word[i] for i in range(word_length))
     
     return blanked_word, emoji, word

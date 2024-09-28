@@ -23,12 +23,9 @@ def generate_question():
         num_blanks = 4
     
     blank_indices = random.sample(range(word_length), num_blanks)
-    blanked_word = ''.join('_' if i in blank_indices else c for i, c in enumerate(word))
+    blanked_word = ''.join('_' if i in blank_indices else word[i] for i in range(word_length))
     
-    # 모든 빈칸을 '_'로 표시
-    displayed_word = ''.join('_' if c == '_' else c for c in blanked_word)
-    
-    return displayed_word, emoji, word
+    return blanked_word, emoji, word
 
 # Streamlit UI
 st.header("✨인공지능 영어단어 퀴즈 선생님 퀴즐링🕵️‍♀️")

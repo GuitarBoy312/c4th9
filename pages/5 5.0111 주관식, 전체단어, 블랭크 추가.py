@@ -11,7 +11,8 @@ word_emojis = {
 
 def generate_question():
     word, emoji = random.choice(list(word_emojis.items()))
-    word_length = len(word)
+    word_chars = list(word)
+    word_length = len(word_chars)
     
     if word_length <= 3:
         num_blanks = 1
@@ -26,10 +27,11 @@ def generate_question():
     blank_indices = random.sample(range(word_length), num_blanks)
     
     # 빈칸을 정확히 표시
-    blanked_word = [('_' if i in blank_indices else c) for i, c in enumerate(word)]
+    for i in blank_indices:
+        word_chars[i] = '_'
     
-    # 공백을 포함한 단어의 경우 처리하면서 모든 문자 사이에 공백 추가
-    blanked_word = ' '.join(blanked_word).replace('_ _', '_')
+    # 모든 문자와 빈칸 사이에 공백 추가
+    blanked_word = ' '.join(word_chars)
     
     return blanked_word, emoji, word
 

@@ -95,11 +95,7 @@ if st.button("새 문제 만들기"):
 
 if st.session_state.question_generated:
     st.markdown("### 문제")
-    
-    if st.session_state.image_url:
-        st.image(st.session_state.image_url, caption="단어 관련 이미지", width=256)  # 너비를 256으로 설정
-    
-    st.write(f"ㅍ위 그림과 이모티콘을 참고하여 빈칸을 채워 전체 단어를 입력하세요: {st.session_state.blanked_word} {st.session_state.emoji}")
+    st.write(f"다음 그림과 이모티콘을 참고하여 빈칸을 채워 전체 단어를 입력하세요: {st.session_state.blanked_word} {st.session_state.emoji}")
     
     if st.session_state.image_url:
         st.image(st.session_state.image_url, caption="단어 관련 이미지", width=256)  # 너비를 256으로 설정

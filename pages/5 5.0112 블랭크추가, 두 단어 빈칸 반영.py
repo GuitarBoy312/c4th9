@@ -23,13 +23,13 @@ def generate_question():
     else:
         num_blanks = 4
     
-    # 빈칸의 위치를 랜덤하게 선택 (공백 포함)
-    blank_indices = random.sample(range(word_length), num_blanks)
+    # 빈칸의 위치를 랜덤하게 선택 (공백 제외)
+    non_space_indices = [i for i, char in enumerate(word_chars) if char != ' ']
+    blank_indices = random.sample(non_space_indices, num_blanks)
     
-    # 빈칸을 정확히 표시 (공백도 '_'로 대체)
-    for i in range(word_length):
-        if i in blank_indices or word_chars[i] == ' ':
-            word_chars[i] = '_'
+    # 빈칸을 정확히 표시
+    for i in blank_indices:
+        word_chars[i] = '_'
     
     blanked_word = ''.join(word_chars)
     
@@ -91,4 +91,3 @@ if st.session_state.question_generated:
                 st.write(f"정답 단어: {st.session_state.correct_word} {st.session_state.emoji}")
             else:
                 st.warning("답을 입력해주세요.")
-

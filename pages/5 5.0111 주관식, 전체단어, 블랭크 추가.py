@@ -22,14 +22,16 @@ def generate_question():
     else:
         num_blanks = 4
     
-    # 모든 인덱스를 포함하여 랜덤 선택
-    blank_indices = random.sample(range(word_length), num_blanks)
+    # 연속된 빈칸을 허용하기 위해 랜덤한 시작 위치 선택
+    start_index = random.randint(0, word_length - num_blanks)
+    blank_indices = range(start_index, start_index + num_blanks)
     
-    # 맨 앞과 맨 끝 인덱스가 포함되지 않았다면, 50% 확률로 포함시킴
-    if 0 not in blank_indices and random.random() < 0.5:
-        blank_indices.append(0)
-    if word_length - 1 not in blank_indices and random.random() < 0.5:
-        blank_indices.append(word_length - 1)
+    # 50% 확률로 맨 앞이나 맨 뒤에 추가 빈칸 생성
+    if random.random() < 0.5:
+        if start_index > 0:  # 맨 앞에 빈칸 추가
+            blank_indices = [0] + list(blank_indices)
+        elif start_index + num_blanks < word_length:  # 맨 뒤에 빈칸 추가
+            blank_indices = list(blank_indices) + [word_length - 1]
     
     blanked_word = ''.join('_' if i in blank_indices else word[i] for i in range(word_length))
     

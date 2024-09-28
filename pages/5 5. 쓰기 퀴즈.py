@@ -6,7 +6,7 @@ import string
 word_emojis = {
     'busy': '😰', 'clean': '🧼', 'dish': '🍽️', 'doll': '🧸', 'homework': '📚', 
     'house': '🏠', 'kitchen': '🍳', 'sleep': '😴', 'sure': '👍', 'wash': '🧼',
-    'glove': '🧤', 'hairband': '👸', 'hundred': '💯', 'much': '🔢', 
+    'glove': '🧤', 'hair_band': '👸', 'hundred': '💯', 'much': '🔢', 
     'pencil': '✏️', 'case': '💼', 'really': '❗', 'scientist': '🔬'
 }
 

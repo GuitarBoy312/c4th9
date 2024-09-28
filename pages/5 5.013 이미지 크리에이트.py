@@ -18,8 +18,8 @@ word_emojis = {
 def generate_image(word):
     try:
         response = client.images.generate(
-            model="dall-e-2",
-            prompt=f"th post of {word}",
+            model="dall-e-3",
+            prompt=f"{word}",
             size="256x256",
             n=1,
         )

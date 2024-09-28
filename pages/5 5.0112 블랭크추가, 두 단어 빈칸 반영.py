@@ -12,21 +12,13 @@ word_emojis = {
 def generate_question():
     word, emoji = random.choice(list(word_emojis.items()))
     word_chars = list(word)
-    word_length = len(word_chars)
     
-    if word_length <= 3:
-        num_blanks = 1
-    elif 4 <= word_length <= 5:
-        num_blanks = 2
-    elif 6 <= word_length <= 7:
-        num_blanks = 3
-    else:
-        num_blanks = 4
+    # 공백을 제외한 모든 위치에서 빈칸을 선택할 수 있도록 함
+    non_space_indices = [i for i, char in enumerate(word_chars) if char != ' ']
+    num_blanks = random.randint(1, len(non_space_indices))  # 최소 1개, 최대 모든 비공백 문자
+    blank_indices = random.sample(non_space_indices, num_blanks)
     
-    # 모든 위치에서 빈칸을 선택할 수 있도록 함
-    blank_indices = random.sample(range(word_length), num_blanks)
-    
-    # 빈칸을 정확히 표시
+    # 빈칸을 정확히 표시 (공백은 그대로 유지)
     blanked_word = ''.join('_' if i in blank_indices else c for i, c in enumerate(word_chars))
     
     return blanked_word, emoji, word

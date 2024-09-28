@@ -97,7 +97,7 @@ if st.session_state.question_generated:
     st.write(f"빈칸을 채워 전체 단어를 입력하세요: {st.session_state.blanked_word} {st.session_state.emoji}")
     
     if st.session_state.image_url:
-        st.image(st.session_state.image_url, caption="단어 관련 이미지", width=300)
+        st.image(st.session_state.image_url, caption="단어 관련 이미지", width=200)  # 너비를 200으로 줄임
     
     with st.form(key='answer_form'):
         user_answer = st.text_input("정답을 입력하세요:")

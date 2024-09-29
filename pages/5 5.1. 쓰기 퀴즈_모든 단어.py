@@ -1,4 +1,3 @@
-
 import streamlit as st
 import random
 
@@ -9,6 +8,16 @@ word_emojis = {
     'umbrella': '☂️', 'watch': '⌚', 'cook': '👨‍🍳', 'doctor': '👨‍⚕️', 
     'farmer': '👨‍🌾', 'fire fighter': '👨‍🚒', 'pilot': '👨‍✈️', 'police officer': '👮‍♂️'
 }
+
+# 세션 상태 초기화
+if 'question_generated' not in st.session_state:
+    st.session_state.question_generated = False
+    st.session_state.blanked_word = ""
+    st.session_state.emoji = ""
+    st.session_state.correct_word = ""
+    st.session_state.num_blanks = 1
+    st.session_state.used_words = set()
+    st.session_state.all_words_used = False
 
 def generate_question(num_blanks):
     available_words = set(word_emojis.keys()) - st.session_state.used_words
@@ -50,16 +59,6 @@ with st.expander("❗❗ 글상자를 펼쳐 사용방법을 읽어보세요 �
     🙏 그럴 때에는 [새 문제 만들기] 버튼을 눌러주세요.
     """
     , unsafe_allow_html=True)
-
-# 세션 상태 초기화
-if 'question_generated' not in st.session_state:
-    st.session_state.question_generated = False
-    st.session_state.blanked_word = ""
-    st.session_state.emoji = ""
-    st.session_state.correct_word = ""
-    st.session_state.num_blanks = 1
-    st.session_state.used_words = set()
-    st.session_state.all_words_used = False
 
 # 슬라이더를 사이드바에서 메인 영역으로 이동
 st.session_state.num_blanks = st.slider("빈칸 개수", min_value=1, max_value=3, value=1)

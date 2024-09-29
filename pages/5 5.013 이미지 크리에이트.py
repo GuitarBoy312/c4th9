@@ -19,7 +19,7 @@ def generate_image(word):
     try:
         response = client.images.generate(
             model="dall-e-3",
-            prompt=f"A simple, child-friendly illustration of {word}. The image should be cute and suitable for elementary school students.",
+            prompt=f"A simple illustration of {word}. The image should be cute and suitable for elementary school students.",
             size="1024x1024",
             quality="standard",
             n=1,

@@ -92,12 +92,6 @@ if st.button("새 문제 만들기"):
     st.session_state.correct_word = correct_word
     st.session_state.question_generated = True
     
-    if st.session_state.all_words_used:
-        st.success("모든 단어를 한 번씩 사용했습니다. 다시 처음부터 시작합니다!")
-        st.session_state.all_words_used = False
-    
-    # 페이지 새로고침
     st.rerun()
 
-# 현재 진행 상황 표시
-st.write(f"현재 {len(st.session_state.used_words)}/{len(word_emojis)} 단어를 사용했습니다.")
+# 진행 상황 표시 제거

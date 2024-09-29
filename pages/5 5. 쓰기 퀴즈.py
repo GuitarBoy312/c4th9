@@ -3,7 +3,7 @@ import random
 
 # 단어와 이모지 목록
 word_emojis = {
-    'busy': '😰', 'clean': '🧼', 'dish': '🍽️', 'doll': '🧸', 'homework': '📚', 
+    'busy': '😰', 'clean': '🧹', 'dish': '🍽️', 'doll': '🧸', 'homework': '📚', 
     'house': '🏠', 'kitchen': '🍳', 'sleep': '😴', 'sure': '👍', 'wash': '🧼',
     'glove': '🧤', 'hair band': '👸', 'hundred': '💯', 'much': '🔢', 
     'pencil case': '✏️', 'really': '❗', 'scientist': '🔬'
@@ -17,7 +17,7 @@ def generate_question(num_blanks):
     blank_indices = random.sample(range(word_length), num_blanks)
     blanked_word = list(word)
     for index in blank_indices:
-        blanked_word[index] = '_'
+        blanked_word[index] = '⬜'
     blanked_word = ''.join(blanked_word)
     
     return blanked_word, emoji, word

@@ -104,8 +104,20 @@ def text_to_speech(text, speaker):
     
     audio_bytes = response.content
     audio_base64 = base64.b64encode(audio_bytes).decode()
-    audio_tag = f'<audio controls><source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3"></audio>'
-    
+    audio_tag = f"""
+    <div class="audio-player" style="margin-bottom: 10px;">
+        <p>{speaker}:</p>
+        <audio id="audio-{speaker}" src="data:audio/mp3;base64,{audio_base64}"></audio>
+        <button onclick="playAudio('audio-{speaker}')">재생</button>
+        <button onclick="pauseAudio('audio-{speaker}')">일시정지</button>
+        <select onchange="changeSpeed('audio-{speaker}', this.value)">
+            <option value="0.5">0.5x</option>
+            <option value="1" selected>1x</option>
+            <option value="1.5">1.5x</option>
+            <option value="2">2x</option>
+        </select>
+    </div>
+    """
     return audio_tag
 
 def generate_dialogue_audio(dialogue):
@@ -114,10 +126,9 @@ def generate_dialogue_audio(dialogue):
     
     for speaker, lines in speakers.items():
         text = " ".join(lines)
-        speaker_name = re.search(r'([A-Za-z]+):', lines[0]).group(1)
+        speaker_name = re.search(r'([A-Za-z]+):', lines[0]).group(1)  # 대화에서 화자 이름 추출
         audio_tag = text_to_speech(text, speaker_name)
-        # 각 오디오 태그를 div로 감싸고 마진을 추가합니다
-        audio_tags.append(f'<div style="margin-bottom: 10px;">{speaker_name}: {audio_tag}</div>')
+        audio_tags.append(audio_tag)
     
     return "".join(audio_tags)
 
@@ -204,9 +215,24 @@ if 'question_generated' in st.session_state and st.session_state.question_genera
     
     # 저장된 음성 태그 사용
     st.markdown("### 대화 듣기")
-    st.write("위에서부터 순서대로 들어보세요. 너무 빠르면 눈사람 버튼을 눌러 속도를 조절해보세요.")
+    st.write("각 화자의 대사를 들어보세요. 재생 버튼을 누르고 속도를 조절할 수 있습니다.")
     st.markdown(st.session_state.audio_tags, unsafe_allow_html=True)
     
+    # JavaScript 함수 추가
+    st.markdown("""
+<script>
+function playAudio(id) {
+    document.getElementById(id).play();
+}
+function pauseAudio(id) {
+    document.getElementById(id).pause();
+}
+function changeSpeed(id, speed) {
+    document.getElementById(id).playbackRate = parseFloat(speed);
+}
+</script>
+""", unsafe_allow_html=True)
+
     with st.form(key='answer_form'):
         selected_option = st.radio("정답을 선택하세요:", st.session_state.options, index=None)
         submit_button = st.form_submit_button(label='정답 확인')

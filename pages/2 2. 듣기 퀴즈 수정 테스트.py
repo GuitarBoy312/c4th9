@@ -105,17 +105,12 @@ def text_to_speech(text, speaker):
     audio_bytes = response.content
     audio_base64 = base64.b64encode(audio_bytes).decode()
     audio_tag = f"""
-    <div class="audio-player" style="margin-bottom: 10px;">
+    <div style="margin-bottom: 10px;">
         <p>{speaker}:</p>
-        <audio id="audio-{speaker}" src="data:audio/mp3;base64,{audio_base64}"></audio>
-        <button onclick="playAudio('audio-{speaker}')">재생</button>
-        <button onclick="pauseAudio('audio-{speaker}')">일시정지</button>
-        <select onchange="changeSpeed('audio-{speaker}', this.value)">
-            <option value="0.5">0.5x</option>
-            <option value="1" selected>1x</option>
-            <option value="1.5">1.5x</option>
-            <option value="2">2x</option>
-        </select>
+        <audio controls preload="metadata" style="width:100%;">
+            <source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3">
+            Your browser does not support the audio element.
+        </audio>
     </div>
     """
     return audio_tag
@@ -215,22 +210,26 @@ if 'question_generated' in st.session_state and st.session_state.question_genera
     
     # 저장된 음성 태그 사용
     st.markdown("### 대화 듣기")
-    st.write("각 화자의 대사를 들어보세요. 재생 버튼을 누르고 속도를 조절할 수 있습니다.")
+    st.write("각 화자의 대사를 들어보세요. 재생 버튼을 눌러 들어보세요.")
     st.markdown(st.session_state.audio_tags, unsafe_allow_html=True)
     
-    # JavaScript 함수 추가
+    # CSS 스타일 추가
     st.markdown("""
-<script>
-function playAudio(id) {
-    document.getElementById(id).play();
+<style>
+audio::-webkit-media-controls-panel {
+  background-color: #f1f3f4;
 }
-function pauseAudio(id) {
-    document.getElementById(id).pause();
+audio::-webkit-media-controls-play-button {
+  background-color: #fff;
+  border-radius: 50%;
 }
-function changeSpeed(id, speed) {
-    document.getElementById(id).playbackRate = parseFloat(speed);
+audio::-webkit-media-controls-play-button:hover {
+  background-color: rgba(0,0,0,0.1);
 }
-</script>
+audio::-webkit-media-controls-current-time-display {
+  color: #000;
+}
+</style>
 """, unsafe_allow_html=True)
 
     with st.form(key='answer_form'):

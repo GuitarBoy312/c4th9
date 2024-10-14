@@ -210,7 +210,7 @@ if 'question_generated' in st.session_state and st.session_state.question_genera
     
     # 저장된 음성 태그 사용
     st.markdown("### 대화 듣기")
-    st.write("각 화자의 대사를 들어보세요. 재생 버튼을 눌러 들어보세요.")
+    st.write("위에서 부터 순서대로 재생 버튼을 눌러 들어보세요. 너무 빠르면 눈사람 버튼을 눌러 속도를 조절해 보세요.")
     st.markdown(st.session_state.audio_tags, unsafe_allow_html=True)
     
     # CSS 스타일 추가

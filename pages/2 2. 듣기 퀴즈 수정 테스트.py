@@ -114,9 +114,10 @@ def generate_dialogue_audio(dialogue):
     
     for speaker, lines in speakers.items():
         text = " ".join(lines)
-        speaker_name = re.search(r'([A-Za-z]+):', lines[0]).group(1)  # 대화에서 화자 이름 추출
+        speaker_name = re.search(r'([A-Za-z]+):', lines[0]).group(1)
         audio_tag = text_to_speech(text, speaker_name)
-        audio_tags.append(audio_tag)
+        # 각 오디오 태그를 div로 감싸고 마진을 추가합니다
+        audio_tags.append(f'<div style="margin-bottom: 10px;">{speaker_name}: {audio_tag}</div>')
     
     return "".join(audio_tags)
 
@@ -203,7 +204,7 @@ if 'question_generated' in st.session_state and st.session_state.question_genera
     
     # 저장된 음성 태그 사용
     st.markdown("### 대화 듣기")
-    st.write("왼쪽부터 순서대로 들어보세요. 너무 빠르면 눈사람 버튼을 눌러 속도를 조절해보세요.")
+    st.write("위에서부터 순서대로 들어보세요. 너무 빠르면 눈사람 버튼을 눌러 속도를 조절해보세요.")
     st.markdown(st.session_state.audio_tags, unsafe_allow_html=True)
     
     with st.form(key='answer_form'):

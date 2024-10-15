@@ -229,11 +229,14 @@ if 'question_generated' in st.session_state and st.session_state.question_genera
         if submit_button:
             if selected_option:
                 st.info(f"선택한 답: {selected_option}")
-                if selected_option.strip() == st.session_state.correct_answer.strip():  
+                correct_answer = st.session_state.correct_answer.strip()
+                selected_answer = selected_option.split('.')[0].strip()  # 선택지의 알파벳만 추출
+
+                if selected_answer == correct_answer:
                     st.success("정답입니다!")
                     st.text(st.session_state.dialogue)
                 else:
-                    st.error(f"틀렸습니다. 정답은 {st.session_state.correct_answer}입니다.")
+                    st.error(f"틀렸습니다. 정답은 {correct_answer}입니다.")
                     st.text(st.session_state.dialogue)
                     
                     # 오답 설명 생성

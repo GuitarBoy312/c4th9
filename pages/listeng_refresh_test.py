@@ -6,8 +6,10 @@ import re
 
 # 페이지 리프레시를 위한 함수
 def reset_session_state():
+    keys_to_keep = ['openai_api_key']  # 유지할 키 목록
     for key in list(st.session_state.keys()):
-        del st.session_state[key]
+        if key not in keys_to_keep:
+            del st.session_state[key]
 
 # 페이지가 로드될 때마다 세션 상태 초기화
 if 'page_loaded' not in st.session_state:
@@ -15,7 +17,10 @@ if 'page_loaded' not in st.session_state:
     st.session_state.page_loaded = True
 
 # OpenAI 클라이언트 초기화
-client = OpenAI(api_key=st.secrets["openai_api_key"])
+if 'openai_api_key' not in st.session_state:
+    st.session_state.openai_api_key = st.secrets["openai_api_key"]
+
+client = OpenAI(api_key=st.session_state.openai_api_key)
 
 # 캐릭터와 성별 정의
 characters = {
@@ -176,31 +181,35 @@ if 'question_generated' not in st.session_state:
     st.session_state.question_generated = False
 
 if st.button("새 문제 만들기"):
-    reset_session_state()  # 세션 상태 초기화
-    
-    full_content = generate_question()
-    
-    dialogue, question_part = full_content.split("[한국어 질문]")
-    
-    question_lines = question_part.strip().split("\n")
-    question = question_lines[0].replace("질문:", "").strip() if question_lines else ""
-    options = question_lines[1:5] if len(question_lines) > 1 else []
-    correct_answer = ""
-    
-    for line in question_lines:
-        if line.startswith("정답:"):
-            correct_answer = line.replace("정답:", "").strip()
-            break
-    
-    st.session_state.question = question
-    st.session_state.dialogue = dialogue.strip()
-    st.session_state.options = options
-    st.session_state.correct_answer = correct_answer
-    st.session_state.question_generated = True
-    
-    # 새 대화에 대한 음성 생성 (남녀 목소리 구분)
-    st.session_state.audio_tags = generate_dialogue_audio(st.session_state.dialogue)
-    
+    with st.spinner("문제를 생성 중입니다..."):
+        try:
+            full_content = generate_question()
+            
+            dialogue, question_part = full_content.split("[한국어 질문]")
+            
+            question_lines = question_part.strip().split("\n")
+            question = question_lines[0].replace("질문:", "").strip() if question_lines else ""
+            options = question_lines[1:5] if len(question_lines) > 1 else []
+            correct_answer = ""
+            
+            for line in question_lines:
+                if line.startswith("정답:"):
+                    correct_answer = line.replace("정답:", "").strip()
+                    break
+            
+            st.session_state.question = question
+            st.session_state.dialogue = dialogue.strip()
+            st.session_state.options = options
+            st.session_state.correct_answer = correct_answer
+            st.session_state.question_generated = True
+            
+            # 새 대화에 대한 음성 생성 (남녀 목소리 구분)
+            st.session_state.audio_tags = generate_dialogue_audio(st.session_state.dialogue)
+            
+            st.success("새 문제가 생성되었습니다!")
+        except Exception as e:
+            st.error(f"문제 생성 중 오류가 발생했습니다: {str(e)}")
+        
     # 페이지 새로고침
     st.rerun()
 

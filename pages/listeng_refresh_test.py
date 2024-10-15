@@ -230,9 +230,9 @@ if 'question_generated' in st.session_state and st.session_state.question_genera
             if selected_option:
                 st.info(f"선택한 답: {selected_option}")
                 correct_answer = st.session_state.correct_answer.strip()
-                selected_answer = selected_option.split('.')[0].strip()  # 선택지의 알파벳만 추출
-
-                if selected_answer == correct_answer:
+                
+                # 정답 비교 로직 수정
+                if selected_option.startswith(correct_answer):
                     st.success("정답입니다!")
                     st.text(st.session_state.dialogue)
                 else:

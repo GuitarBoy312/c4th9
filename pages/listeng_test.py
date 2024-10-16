@@ -125,14 +125,6 @@ def create_audio_players(audio_contents):
         audio_tags.append(audio_tag)
     return "".join(audio_tags)
 
-# 버튼 상태를 위한 세션 상태 추가
-if 'button_disabled' not in st.session_state:
-    st.session_state.button_disabled = False
-
-# 상단의 "새 문제 만들기" 버튼
-if st.button("새 문제 만들기", key="top_button", disabled=st.session_state.button_disabled):
-    generate_new_question()
-
 # Streamlit UI
 
 st.header("✨인공지능 영어듣기 퀴즈 선생님 퀴즐링🕵️‍♀️")
@@ -186,28 +178,31 @@ if st.session_state.listening_quiz_current_question is not None:
                 st.session_state.listening_quiz_current_question = None
             else:
                 st.warning("답을 선택해주세요.")
-# 하단의 "새 문제 만들기" 버튼
-if st.button("새 문제 만들기", key="bottom_button", disabled=st.session_state.button_disabled):
-    generate_new_question()
 
-def generate_new_question():
-    try:
-        st.session_state.button_disabled = True
-        with st.spinner("새로운 문제를 생성 중입니다..."):
-            qa_set = generate_question()
+# 새로운 세션 상태 변수 추가
+if 'is_generating_question' not in st.session_state:
+    st.session_state.is_generating_question = False
+
+# "새 문제 만들기" 버튼
+if not st.session_state.is_generating_question:
+    if st.button("새 문제 만들기"):
+        try:
+            st.session_state.is_generating_question = True
+            with st.spinner("새로운 문제를 생성 중입니다..."):
+                qa_set = generate_question()
             
-        st.session_state.question = qa_set["question"]
-        st.session_state.dialogue = qa_set["dialogue"]
-        st.session_state.options = qa_set["options"]
-        st.session_state.correct_answer = qa_set["correct_answer"]
-        st.session_state.listening_quiz_current_question = (qa_set["question"], qa_set["options"], qa_set["correct_answer"])
-        
-        audio_contents = generate_dialogue_audio(qa_set["dialogue"], qa_set["speaker_a"], qa_set["speaker_b"])
-        st.session_state.audio_tags = create_audio_players(audio_contents)
-        
-        update_sidebar()
-        st.session_state.button_disabled = False
-        st.rerun()
-    except Exception as e:
-        st.error(f"오류가 발생했습니다. 새문제 만들기 버튼을 다시 눌러주세요.: {str(e)}")
-        st.session_state.button_disabled = False
+            st.session_state.question = qa_set["question"]
+            st.session_state.dialogue = qa_set["dialogue"]
+            st.session_state.options = qa_set["options"]
+            st.session_state.correct_answer = qa_set["correct_answer"]
+            st.session_state.listening_quiz_current_question = (qa_set["question"], qa_set["options"], qa_set["correct_answer"])
+            
+            audio_contents = generate_dialogue_audio(qa_set["dialogue"], qa_set["speaker_a"], qa_set["speaker_b"])
+            st.session_state.audio_tags = create_audio_players(audio_contents)
+            
+            update_sidebar()
+            st.session_state.is_generating_question = False
+            st.rerun()
+        except Exception as e:
+            st.error(f"오류가 발생했습니다. 새문제 만들기 버튼을 다시 눌러주세요.: {str(e)}")
+            st.session_state.is_generating_question = False

@@ -147,8 +147,36 @@ with st.expander("❗❗ 글상자를 펼쳐 사용방법을 읽어보세요 �
     """
     ,  unsafe_allow_html=True)
 
-# "새 문제 만들기" 버튼을 비활성화 상태로 표시
-if st.button("새 문제 만들기", disabled=st.session_state.is_generating_question):
+# 버튼 스타일 정의
+button_style = """
+    <style>
+    div.stButton > button:first-child {
+        background-color: #FF4B4B;
+        color: white;
+    }
+    div.stButton > button:hover {
+        background-color: #FF7676;
+        color: white;
+    }
+    div.stButton > button:focus {
+        background-color: #FF4B4B;
+        color: white;
+    }
+    div.stButton > button:disabled {
+        background-color: #D3D3D3;
+        color: #808080;
+    }
+    </style>
+"""
+
+# 스타일 적용
+st.markdown(button_style, unsafe_allow_html=True)
+
+# 버튼 텍스트 설정
+button_text = "🚫 새 문제 생성 중..." if st.session_state.is_generating_question else "새 문제 만들기"
+
+# "새 문제 만들기" 버튼
+if st.button(button_text, disabled=st.session_state.is_generating_question):
     try:
         st.session_state.is_generating_question = True
         with st.spinner("새로운 문제를 생성 중입니다..."):

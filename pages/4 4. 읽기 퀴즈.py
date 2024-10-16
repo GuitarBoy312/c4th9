@@ -7,187 +7,136 @@ import re
 client = OpenAI(api_key=st.secrets["openai_api_key"])
 
 # 세션 상태에 현재 문제 유형을 저장하기 위한 키 추가
-if 'current_question_type' not in st.session_state:
-    st.session_state.current_question_type = None
+if 'reading_quiz_current_question_type' not in st.session_state:
+    st.session_state.reading_quiz_current_question_type = None
 
-def generate_essay_question():
-    name = random.choice(["Paul", "Jello", "Uju", "Khan", "Eric", "Bora", "Tina", "Amy"])
-    question = "What are you doing?"
-    answer = random.choice([
-        "I'm singing.",
-        "I'm dancing.",
-        "I'm cooking.",
-        "I'm sleeping.",
-        "I'm making a doll.",
-        "I'm cleaning the house.",
-        "I'm watching TV.",
-        "I'm washing dishes."
-    ])
-    question_format = "대화를 읽고 무엇을 하고 있는지에 관해 묻는 질문"
+# 앱에 새로 들어갈 때마다 초기화할 변수들
+if 'reading_quiz_session_init' not in st.session_state:
+    st.session_state.reading_quiz_session_init = False
 
-    key_expression = f'''
-    A: What are you doing?
-    B: {answer}
-    '''
-    prompt = f"""
-    {key_expression}을 이용하여CEFR A1 수준의 영어 지문을 1문장으로 작성해주세요. 
-    그 다음, 지문에 관한 간단한 질문을 한국어로 만들어주세요. 
-    질문을 만들 때, 지문에 맞는 화자를 포함해서 질문해 주세요. 예를 들어, 화자가 Tom이면 "톰이..." 로, 화자가 I면 "내가..."로 시작하는 질문을 생성해 주세요. A가 또는 B가로 시작하는 말은 하지마세요.
-    마지막으로, 질문에 대한 4개의 선택지를 초등학생이 이해하기 쉬운 한국어로 제공해주세요. 
-    정답은 선택지 중 하나여야 합니다.
-    출력 형식:
-    질문: (한국어 질문)
-    지문: (영어 지문)
-    선택지:
-    1. (선택지 1)
-    2. (선택지 2)
-    3. (선택지 3)
-    4. (선택지 4)
-    정답: (정답 번호)
-    """
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content" : "너는 EFL 환경의 초등학교 영어교사야. 초등학생에 맞는 쉬운 한국어와 영어를 사용해."},
-            {"role": "user", "content": prompt}]
-    )
+if not st.session_state.reading_quiz_session_init:
+    st.session_state.reading_quiz_total_questions = 0
+    st.session_state.reading_quiz_correct_answers = 0
+    st.session_state.reading_quiz_current_question = None
+    st.session_state.reading_quiz_session_init = True
 
-    return response.choices[0].message.content
+# 사이드바 컨테이너 생성
+if 'reading_quiz_sidebar_placeholder' not in st.session_state:
+    st.session_state.reading_quiz_sidebar_placeholder = st.sidebar.empty()
+
+# 사이드바 업데이트 함수
+def update_sidebar():
+    st.session_state.reading_quiz_sidebar_placeholder.empty()
+    with st.session_state.reading_quiz_sidebar_placeholder.container():
+        st.write("## 읽기퀴즈 점수")
+        st.write(f"총 문제 수: {st.session_state.reading_quiz_total_questions}")
+        st.write(f"맞춘 문제 수: {st.session_state.reading_quiz_correct_answers}")
+        if st.session_state.reading_quiz_total_questions > 0:
+            accuracy = int((st.session_state.reading_quiz_correct_answers / st.session_state.reading_quiz_total_questions) * 100)
+            st.write(f"정확도: {accuracy}%")
+
+# 초기 사이드바 설정
+update_sidebar()
+
+# 세션 상태에 문제 답변 여부를 추적하는 변수 추가
+if 'question_answered' not in st.session_state:
+    st.session_state.question_answered = False
+
+# 세션 상태에 이전 선택을 저장하는 변수 추가
+if 'previous_selection' not in st.session_state:
+    st.session_state.previous_selection = None
 
 def generate_conversation_question():
-    answer = random.choice([
-     "I'm singing.",
-        "I'm dancing.",
-        "I'm cooking.",
-        "I'm sleeping.",
-        "I'm making a doll.",
-        "I'm cleaning the house.",
-        "I'm watching TV.",
-        "I'm washing dishes."])
-    question_format = "대화를 읽고 무엇을 하고 있는지에 관해 묻는 질문"
+    names = ["Paul", "Jello", "Uju", "Khan", "Eric", "Bora", "Tina", "Amy"]
+    activities = [
+        "I'm singing",
+        "I'm dancing",
+        "I'm cooking",
+        "I'm sleeping",
+        "I'm making a doll",
+        "I'm cleaning the house",
+        "I'm watching TV",
+        "I'm washing dishes"
+    ]
 
-    key_expression = f'''
-    A: What are you doing?
-    B: {answer}
-    '''
-    prompt = f"""{key_expression}과 같은 구문을 사용 하는 CEFR A1 수준의 간단한 영어 대화를 생성해주세요. 
-    영어 대화를 생성할 때, 마지막 대화 내용은 알려주지 말고대화 내용에 관한 객관식 질문으로 만들어야 합니다. 
-    그 후 대화 내용에 관한 객관식 질문을 한국어로 만들어주세요.  
-    조건: 문제의 정답은 1개 입니다. 
-    A와 B가 대화할 때 상대방의 이름을 부르면서 대화를 합니다. 
-    영어 대화는 A와 B가 각각 1번 말하고 끝납니다.
-    형식:
-    [영어 대화]
-    A: ...
-    B: ...
+    name = random.choice(names)
+    activity = random.choice(activities)
 
-    [한국어 질문]
-    조건: {question_format}을 만들어야 합니다. 영어 대화에서 생성된 A와 B의 이름 중 필요한 것을 골라서 질문에 사용해야 합니다.
-    질문: (한국어로 된 질문) 이 때, 선택지는 한국어로 제공됩니다.
-    A. (선택지)
-    B. (선택지)
-    C. (선택지)
-    D. (선택지)
-    정답: (정답 선택지)
-    """
+    dialogue = f"""
+A: {name}, what are you doing?
+B: {activity}.
+"""
 
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[{"role": "user", "content": prompt}]
-    )
+    question = f"{name}은(는) 지금 무엇을 하고 있나요?"
+    correct_answer = activity
 
-    return response.choices[0].message.content
+    # 오답 생성
+    wrong_answers = random.sample([a for a in activities if a != activity], 3)
+    options = [activity] + wrong_answers
+    random.shuffle(options)
+
+    # 선택지를 한국어로 변환
+    korean_activities = {
+        "I'm singing": "노래하고 있어요",
+        "I'm dancing": "춤추고 있어요",
+        "I'm cooking": "요리하고 있어요",
+        "I'm sleeping": "자고 있어요",
+        "I'm making a doll": "인형을 만들고 있어요",
+        "I'm cleaning the house": "집을 청소하고 있어요",
+        "I'm watching TV": "TV를 보고 있어요",
+        "I'm washing dishes": "설거지를 하고 있어요"
+    }
+
+    korean_options = [korean_activities[opt] for opt in options]
+    correct_answer = korean_activities[correct_answer]
+
+    return f"""
+[영어 대화]
+{dialogue}
+
+[한국어 질문]
+질문: {question}
+A. {korean_options[0]}
+B. {korean_options[1]}
+C. {korean_options[2]}
+D. {korean_options[3]}
+정답: {chr(65 + korean_options.index(correct_answer))}
+"""
 
 def generate_question():
-    # 현재 문제 유형에 따라 다음 문제 유형 결정
-    if st.session_state.current_question_type == 'essay' or st.session_state.current_question_type is None:
-        question_type = 'conversation'
-    else:
-        question_type = 'essay'
-    
-    # 문제 유형 저장
-    st.session_state.current_question_type = question_type
-    
-    if question_type == 'essay':
-        return generate_essay_question(), "essay"
-    else:
-        return generate_conversation_question(), "conversation"
+    return generate_conversation_question(), "conversation"
 
-def parse_question_data(data, question_type):
+def parse_question_data(data):
     lines = data.split('\n')
-    if question_type == "essay":
-        passage = ""
-        question = ""
-        options = []
-        correct_answer = None
+    dialogue = ""
+    question = ""
+    options = []
+    correct_answer = None
 
-        for line in lines:
-            if line.startswith("지문:"):
-                passage = line.replace("지문:", "").strip()
-            elif line.startswith("질문:"):
+    dialogue_section = True
+    for line in lines:
+        if line.strip() == "[한국어 질문]":
+            dialogue_section = False
+            continue
+        if dialogue_section:
+            dialogue += line + "\n"
+        else:
+            if line.startswith("질문:"):
                 question = line.replace("질문:", "").strip()
-            elif re.match(r'^\d+\.', line):
+            elif line.startswith(("A.", "B.", "C.", "D.")):
                 options.append(line.strip())
             elif line.startswith("정답:"):
                 correct_answer = line.replace("정답:", "").strip()
 
-        if correct_answer:
-            correct_answer = int(re.search(r'\d+', correct_answer).group())
+    # 정답에서 알파벳만 추출
+    if correct_answer:
+        correct_answer = correct_answer.split('.')[0].strip()
 
-        return passage, question, options, correct_answer
-    else:
-        dialogue = ""
-        question = ""
-        options = []
-        correct_answer = None
+    return dialogue.strip(), question, options, correct_answer
 
-        dialogue_section = True
-        for line in lines:
-            if line.strip() == "[한국어 질문]":
-                dialogue_section = False
-                continue
-            if dialogue_section:
-                dialogue += line + "\n"
-            else:
-                if line.startswith("질문:"):
-                    question = line.replace("질문:", "").strip()
-                elif line.startswith(("A.", "B.", "C.", "D.")):
-                    options.append(line.strip())
-                elif line.startswith("정답:"):
-                    correct_answer = line.replace("정답:", "").strip()
-
-        # 정답에서 알파벳만 추출
-        if correct_answer:
-            correct_answer = correct_answer.split('.')[0].strip()
-
-        return dialogue.strip(), question, options, correct_answer
-
-def get_explanation_essay(question, passage, correct_answer, selected_option):
+def get_explanation(question, dialogue, correct_answer, selected_option):
     prompt = f"""
-    이 학생에게  정답이 무엇인지, 그들의 답변이 왜 틀렸는지, 학생이 방금 선택한 답변을 영어로 표현하면 무엇인지 설명해주세요. 
-    설명은 친절하고 격려하는 톤으로 작성해주세요. 
-    대화의 내용을 참조하여 구체적으로 설명해주세요.
-
-    지문: {passage}
-
-    문제: {question}
-    정답: {correct_answer}
-    학생의 선택: {selected_option}
-    """
-    
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": "당신은 친절한 초등학교 영어 선생님입니다."},
-            {"role": "user", "content": prompt}
-        ]
-    )
-    
-    return response.choices[0].message.content.strip()
-
-def get_explanation_dialogue(question, dialogue, correct_answer, selected_option):
-    prompt = f"""
-    이 학생에게  정답이 무엇인지, 그들의 답변이 왜 틀렸는지, 학생이 방금 선택한 답변을 영어로 표현하면 무엇인지 설명해주세요.
+    이 학생에게  정답이 무엇인지, 그들의 답변이 왜 틀렸는지, 학생이 방금 선택한 답변을 영어로 표현하면 무엇인지 설명해주세요.  
     설명은 친절하고 격려하는 톤으로 작성해주세요. 
     대화의 내용을 참조하여 구체적으로 설명해주세요.
 
@@ -209,21 +158,54 @@ def get_explanation_dialogue(question, dialogue, correct_answer, selected_option
     
     return response.choices[0].message.content.strip()
 
-def main():
-    # Streamlit UI
+def display_question():
+    dialogue, question, options, correct_answer = parse_question_data(st.session_state.reading_quiz_current_question)
+    
+    st.subheader("질문")
+    st.write(question)
 
-    # 메인 화면 구성
+    st.divider()
+    st.text(dialogue)
+    st.divider()
+
+    st.subheader("다음 중 알맞은 답을 골라보세요.")
+    
+    with st.form(key='answer_form'):
+        selected_option = st.radio("", options, index=None)
+        submit_button = st.form_submit_button(label='정답 확인')
+
+        if submit_button and not st.session_state.question_answered:
+            if selected_option:
+                st.info(f"선택한 답: {selected_option}")
+                st.session_state.question_answered = True
+                is_correct = selected_option.split('.')[0].strip() == correct_answer
+                
+                if is_correct:
+                    st.success("정답입니다!")
+                    st.session_state.reading_quiz_correct_answers += 1
+                else:
+                    st.error(f"틀렸습니다. 정답은 {correct_answer}입니다.")
+                    explanation = get_explanation(question, dialogue, correct_answer, selected_option)
+                    st.write(explanation)
+                
+                update_sidebar()
+            else:
+                st.warning("답을 선택해주세요.")
+        elif st.session_state.question_answered:
+            st.warning("이미 답변을 제출했습니다. 새 문제를 만들어주세요.")
+
+def main():
     st.header("✨인공지능 영어 퀴즈 선생님 퀴즐링🕵️‍♀️")
     st.subheader("지금 하고 있는 일에 대한 영어읽기 퀴즈🕺")
     st.divider()
 
-    #확장 설명
+    # 확장 설명
     with st.expander("❗❗ 글상자를 펼쳐 사용방법을 읽어보세요 👆✅", expanded=False):
         st.markdown(
     """     
-    1️⃣ [새 문제 만들기] 버튼을 눌러 문제 만들기.<br>
-    2️⃣ 질문과 대화를 읽어보기<br> 
-    3️⃣ 정답을 선택하고 [정답 확인] 버튼 누르기.<br>
+    1️⃣ [새 문제 만들기] 버튼을 눌러 문제를 만드세요.<br>
+    2️⃣ 질문과 대화를 읽어보세요.<br> 
+    3️⃣ 정답을 선택하고 [정답 확인] 버튼을 누르세요.<br>
     4️⃣ 틀렸으면 오답풀이를 확인하세요.<br>
     <br>
     🙏 퀴즐링은 완벽하지 않을 수 있어요.<br> 
@@ -231,90 +213,16 @@ def main():
     """
     ,  unsafe_allow_html=True)
 
-    # 세션 상태 초기화
-    if 'question_data' not in st.session_state:
-        st.session_state.question_data = None
-        st.session_state.question_type = None
-        st.session_state.selected_option = None
-        st.session_state.show_answer = False
-        st.session_state.last_checked_option = None
-        st.session_state.explanation = None  # 설명을 저장할 새로운 상태 변수
+    if st.session_state.reading_quiz_current_question:
+        display_question()
 
-    if st.button("새로운 문제 생성"):
-        st.session_state.question_data, st.session_state.question_type = generate_question()
-        st.session_state.selected_option = None
-        st.session_state.show_answer = False
-        st.session_state.last_checked_option = None
-        st.session_state.explanation = None  # 새 문제 생성 시 설명 초기화
-
-    if st.session_state.question_data:
-        if st.session_state.question_type == "essay":
-            passage, question, options, correct_answer = parse_question_data(st.session_state.question_data, "essay")
-            
-            st.subheader("질문")
-            st.write(question)
-
-            st.divider()
-            st.write(passage)
-            st.divider()
-
-            st.subheader("다음 중 알맞은 답을 골라보세요.")
-            selected_option = st.radio("", options, index=None, key="essay_options")
-            st.session_state.selected_option = selected_option
-
-        else:
-            dialogue, question, options, correct_answer = parse_question_data(st.session_state.question_data, "conversation")
-            
-            st.markdown("### 질문")
-            st.write(question)
-            
-            st.divider()
-            st.text(dialogue)
-            st.divider() 
-            st.subheader("다음 중 알맞은 답을 골라보세요.")
-            selected_option = st.radio("", options, index=None, key="conversation_options")
-            st.session_state.selected_option = selected_option
-
-        if st.button("정답 확인"):
-            st.session_state.show_answer = True
-            st.session_state.last_checked_option = st.session_state.selected_option
-
-            # 정답 확인 시에만 설명 생성
-            if st.session_state.question_type == "essay":
-                selected_number = int(st.session_state.last_checked_option.split('.')[0].strip())
-                is_correct = selected_number == correct_answer
-            else:
-                selected_letter = st.session_state.last_checked_option.split('.')[0].strip()
-                is_correct = selected_letter == correct_answer
-            
-            if not is_correct:
-                if st.session_state.question_type == "essay":
-                    st.session_state.explanation = get_explanation_essay(question, passage, correct_answer, st.session_state.last_checked_option)
-                else:
-                    st.session_state.explanation = get_explanation_dialogue(question, dialogue, correct_answer, st.session_state.last_checked_option)
-
-        if st.session_state.show_answer and st.session_state.last_checked_option:
-            st.markdown(f"""
-            <div style='background-color: #E6F3FF; padding: 10px; border-radius: 5px; margin-top: 10px;'>
-            선택한 답: {st.session_state.last_checked_option}
-            </div>
-            """, unsafe_allow_html=True)
-
-            if st.session_state.question_type == "essay":
-                selected_number = int(st.session_state.last_checked_option.split('.')[0].strip())
-                is_correct = selected_number == correct_answer
-            else:
-                selected_letter = st.session_state.last_checked_option.split('.')[0].strip()
-                is_correct = selected_letter == correct_answer
-            
-            if is_correct:
-                st.success("정답입니다!")
-            else:
-                st.error(f"틀렸습니다. 정답은 {correct_answer}입니다.")
-                if st.session_state.explanation:
-                    st.write(st.session_state.explanation)
-        elif st.session_state.show_answer and not st.session_state.last_checked_option:
-            st.warning("선택지를 선택하고 정답 확인 버튼을 눌러주세요.")
+    if st.button("새 문제 만들기"):
+        with st.spinner("새로운 문제를 생성 중입니다..."):
+            st.session_state.reading_quiz_current_question, st.session_state.reading_quiz_current_question_type = generate_question()
+            st.session_state.question_answered = False
+            st.session_state.reading_quiz_total_questions += 1  # 총 문제 수 증가
+            update_sidebar()  # 사이드바 업데이트
+        st.rerun()
 
 if __name__ == "__main__":
     main()

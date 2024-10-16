@@ -125,6 +125,10 @@ def create_audio_players(audio_contents):
         audio_tags.append(audio_tag)
     return "".join(audio_tags)
 
+# 버튼 상태를 위한 세션 상태 추가
+if 'button_disabled' not in st.session_state:
+    st.session_state.button_disabled = False
+
 # Streamlit UI
 
 st.header("✨인공지능 영어듣기 퀴즈 선생님 퀴즐링🕵️‍♀️")
@@ -180,8 +184,9 @@ if st.session_state.listening_quiz_current_question is not None:
                 st.warning("답을 선택해주세요.")
 
 # "새 문제 만들기" 버튼
-if st.button("새 문제 만들기"):
+if st.button("새 문제 만들기", disabled=st.session_state.button_disabled):
     try:
+        st.session_state.button_disabled = True
         with st.spinner("새로운 문제를 생성 중입니다..."):
             qa_set = generate_question()
             
@@ -195,6 +200,8 @@ if st.button("새 문제 만들기"):
         st.session_state.audio_tags = create_audio_players(audio_contents)
         
         update_sidebar()
+        st.session_state.button_disabled = False
         st.rerun()
     except Exception as e:
         st.error(f"오류가 발생했습니다. 새문제 만들기 버튼을 다시 눌러주세요.: {str(e)}")
+        st.session_state.button_disabled = False
